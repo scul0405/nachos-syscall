@@ -96,36 +96,58 @@ ExceptionHandler(ExceptionType which)
 					break;
 				case SC_Exit:
 					// Handle here
+					
+					IncreasePC();
 					break;
 				case SC_Exec:
 					// Handle here
+					
+					IncreasePC();
 					break;
 				case SC_Join:
 					// Handle here
+					
+					IncreasePC();
 					break;
 				case SC_Create:
 					// Handle here
+					
+					IncreasePC();
 					break;
 				case SC_Open:
 					// Handle here
+					
+					IncreasePC();
 					break;
 				case SC_Open:
 					// Handle here
+					
+					IncreasePC();
 					break;
 				case SC_Read:
 					// Handle here
+					
+					IncreasePC();
 					break;
 				case SC_Write:
 					// Handle here
+					
+					IncreasePC();
 					break;
 				case SC_Close:
 					// Handle here
+					
+					IncreasePC();
 					break;
 				case SC_Fork:
 					// Handle here
+					
+					IncreasePC();
 					break;
 				case SC_Yield:
 					// Handle here
+					
+					IncreasePC();
 					break;
 					
 
@@ -138,4 +160,12 @@ ExceptionHandler(ExceptionType which)
 			printf("Unexpected user mode exception %d %d\n", which, type);
 			// ASSERT(FALSE); chua hieu day la cai gi ???
 	}
+}
+
+void IncreasePC(){
+	int pcAfter = machine->registers[NextPCReg] + 4 // tang next PC len 4 (vi int 4 byte)
+
+	machine->registers[PrevPCReg] = machine->registers[PCReg]; // gan previous PC register = current PC register
+    machine->registers[PCReg] = machine->registers[NextPCReg]; // gan current PC register = next PC register
+    machine->registers[NextPCReg] = pcAfter; // gan next PC register = pcAfter vua tinh o phia tren
 }
