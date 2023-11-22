@@ -6,7 +6,7 @@
 
 int
 main(){
-	
+	/*
 	PrintString("--THONG TIN NHOM--\n");
 	PrintString("\t21120262 - Nguyen Huynh Huu Khang\n");
 	PrintString("\t21120300 - Phan Thanh Ha Nguyen\n");
@@ -15,6 +15,6 @@ main(){
 	PrintString("\t21120530 - Nguyen Hoang Phuc\n\n");
 
 	PrintString("Mo ta chuong trinh ascii: ");
-	PrintString("Mo ta chuong trinh sort: ");
+	PrintString("Mo ta chuong trinh sort: ");*/
 	return 0;
 }
