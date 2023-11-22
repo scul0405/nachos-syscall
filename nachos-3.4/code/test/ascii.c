@@ -11,13 +11,13 @@ main()
 {
     int i;
 	/*
-	PrintString("\n--Chuong trinh in bang ma ascii--\n");
-    for (i = 0; i < 255; i++){
+	PrintString("\n--Chuong trinh in bang ma ascii (cac ki tu co the thay duoc)--\n");
+    for (i = 32; i <= 126; i++){
 		PrintString("Ki tu thu i: ");		
 		PrintInt(i);
 		PrintString(": ");
 		PrintChar((char)i);
-		PrintString("\n");
+		PrintChar("\n");
 	}
 	*/
 	return 0;
