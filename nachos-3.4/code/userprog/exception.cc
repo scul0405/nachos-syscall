@@ -135,12 +135,41 @@ void ExceptionHandler(ExceptionType which)
 		switch (type)
 		{
 			case SC_Halt:
-				DEBUG('a', "Shutdown, initiated by user program.\n");
-				printf("Shutdown, initiated by user program.\n\n");
+				//DEBUG('a', "Shutdown, initiated by user program.\n");
+				printf("\nShutdown, initiated by user program.");
 				interrupt->Halt();
 				break;
+
+      case SC_ReadChar:
+        {
+          int maxBuffer;
+          char *buffer_RC;
+          char c_RC;
+
+          maxBuffer = 255;
+          buffer_RC = new char[255];
+
+          memset(buffer_RC, 0, maxBuffer);
+
+          gSynchConsole->Read(buffer_RC, maxBuffer); // read buffer from screen        
+        c_RC = buffer_RC[0];
+        machine->WriteRegister(2, c_RC); // return c to register 2
+        
+        delete[] buffer_RC;
+        IncreasePC();
+        return;
+      }
+      case SC_PrintChar:
+        { char buffer_PC;
+
+        buffer_PC = machine->ReadRegister(4); // read the input params
+        gSynchConsole->Write(&buffer_PC, 1);
+        
+				IncreasePC();
+        return;
+        }
  			case SC_ReadString:
-				int virtAddr_RS;
+        {	int virtAddr_RS;
 				int len_RS;
 				char* buffer_RS;
 				virtAddr_RS = machine->ReadRegister(4); // get buffer position
@@ -150,14 +179,16 @@ void ExceptionHandler(ExceptionType which)
 				System2User(virtAddr_RS, len_RS, buffer_RS); // return to user
 				delete[] buffer_RS;
 				IncreasePC();
-				break;
+				return; }
  			case SC_PrintString:
-			{
-				int virtAddr_PR;
+        { int virtAddr_PR;
 				char* buffer_PR;
-				virtAddr_PR = machine->ReadRegister(4); // get buffer position
+				int len_PR;
+				
+        virtAddr_PR = machine->ReadRegister(4); // get buffer position
 				buffer_PR = User2System(virtAddr_PR, 255); // get buffer
-				int len_PR = 1;
+        len_PR = 1;
+
 				while(buffer_PR[len_PR] != 0) // get buffer length
 				{
 					len_PR++;
@@ -166,13 +197,21 @@ void ExceptionHandler(ExceptionType which)
 				delete[] buffer_PR;
 				IncreasePC();
 				return;
-			}
-			default:
-				printf("Unexpected user mode exception %d %d\n", which, type);
+        }
+      case SC_Exit:
+        int exitCode;
+        exitCode = machine->ReadRegister(4);
+
+        printf("\nProgram closed with exit code: %d", exitCode);
+				IncreasePC();
+        break;
+      
+      default:
+				printf("\nUnexpected user mode exception %d %d", which, type);
 				interrupt->Halt();
-		}
+		};
 	break;
 	default:
-		printf("Unexpected user mode exception %d %d\n", which, type);
+		printf("\nUnexpected user mode exception %d %d", which, type);
 	}
 }
