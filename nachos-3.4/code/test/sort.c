@@ -8,16 +8,32 @@
  */
 
 #include "syscall.h"
-
-/*int A[1024];*/	/* size of physical memory; with code, we'll run out of space!*/
 #define MAX_LENGTH 100
+
+int compare(int* a, int* b, int order){
+	//Ascen
+	if (order == 0){
+		if (*a < *b)
+		{
+			return 1;
+		}
+		return 0;
+	}
+	
+	//Descen
+	if (*a < *b)
+	{
+		return 0;
+	}
+	return 1;
+}
 
 int
 main()
 {
     int i, j, tmp;
 	int order, n, a[MAX_LENGTH+1];
-
+	/*
 	//Input array length
 	PrintString("Nhap so luong phan tu mang: ");
 	n = ReadInt();
@@ -47,22 +63,24 @@ main()
 		order = ReadInt();
 	}
 
-    /* first initialize the array, in reverse sorted order */
-	/*
-    for (i = 0; i < 1024; i++)		
-        A[i] = 1024 - i;
+	//Sort
+	for (i = 0; i < n - 1; ++i) {
+		for (j = i + 1; j < n; ++j) {
+			if (!compare(a+i, a+j, order)){
+				tmp = a[i];
+				a[i] = a[j];
+				a[j] = tmp;
+			}
+		}
+	}
+
+	//Print result
+	PrintString("Mang sau khi duoc sap xep:\n\t");
+	for (i = 0; i < n; ++i) {
+		PrintInt(a[i]);
+		PrintChar(' ');
+	}
+	PrintChar('\n');
 	*/
-    /* then sort! */
-	/*
-    for (i = 0; i < 1023; i++)
-        for (j = i; j < (1023 - i); j++)
-	   if (A[j] > A[j + 1])*/ {	/* out of order -> need to swap ! */
-	/*
-	      tmp = A[j];
-	      A[j] = A[j + 1];
-	      A[j + 1] = tmp;
-    	   }
-    Exit(A[0]);
-	*/
-	/* and then we're done -- should be 0! */
+	return 0;
 }
