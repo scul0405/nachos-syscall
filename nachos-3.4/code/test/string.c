@@ -2,7 +2,8 @@
 
 int main()
 {
-	PrintString("Phan Thanh Ha Nguyen");
-	Halt();
+	char* a;
+	ReadString(a, 100);
+	PrintString(a);
 	return 0;
 }

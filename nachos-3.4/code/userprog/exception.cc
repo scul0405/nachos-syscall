@@ -144,24 +144,28 @@ void ExceptionHandler(ExceptionType which)
 				int len_RS;
 				char* buffer_RS;
 				virtAddr_RS = machine->ReadRegister(4); // get buffer position
-				len_RS = machine->ReadRegister(5); // get buffer lenght
+				len_RS = machine->ReadRegister(5); // get buffer length
 				buffer_RS = User2System(virtAddr_RS, len_RS); // get buffer
 				gSynchConsole->Read(buffer_RS, len_RS); // read buffer
-				System2User(virtAddr_RS, len_RS, buffer_RS);
+				System2User(virtAddr_RS, len_RS, buffer_RS); // return to user
 				delete[] buffer_RS;
 				IncreasePC();
-				return;
+				break;
  			case SC_PrintString:
 			{
 				int virtAddr_PR;
 				char* buffer_PR;
-				virtAddr_PR = machine->ReadRegister(4);
-				buffer_PR = User2System(virtAddr_PR, 255);
-				int len_PR = 0;
-				if (buffer_PR != "") len_PR = int(sizeof(buffer_PR) / sizeof(buffer_PR[0]));
-				gSynchConsole->Write(buffer_PR, len_PR);
+				virtAddr_PR = machine->ReadRegister(4); // get buffer position
+				buffer_PR = User2System(virtAddr_PR, 255); // get buffer
+				int len_PR = 1;
+				while(buffer_PR[len_PR] != 0) // get buffer length
+				{
+					len_PR++;
+				}
+				gSynchConsole->Write(buffer_PR, len_PR); // write buffer
 				delete[] buffer_PR;
-				break;
+				IncreasePC();
+				return;
 			}
 			default:
 				printf("Unexpected user mode exception %d %d\n", which, type);
