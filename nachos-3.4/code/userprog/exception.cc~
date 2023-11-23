@@ -24,6 +24,7 @@
 #include "copyright.h"
 #include "system.h"
 #include "syscall.h"
+#include "console.h"
 
 //----------------------------------------------------------------------
 // ExceptionHandler
@@ -48,94 +49,126 @@
 //	are in machine.h.
 //----------------------------------------------------------------------
 
-void
-ExceptionHandler(ExceptionType which)
+char* User2System(int virtAddr, int limit)
+{
+	int i; //chi so index
+	int oneChar;
+	char* kernelBuf = NULL;
+	kernelBuf = new char[limit + 1]; //can cho chuoi terminal
+	if (kernelBuf == NULL)
+		return kernelBuf;
+		
+	memset(kernelBuf, 0, limit + 1);
+	
+	for (i = 0; i < limit; i++)
+	{
+		machine->ReadMem(virtAddr + i, 1, &oneChar);
+		kernelBuf[i] = (char)oneChar;
+		if (oneChar == 0)
+			break;
+	}
+	return kernelBuf;
+}
+
+int System2User(int virtAddr, int len, char* buffer)
+{
+	if (len < 0) return -1;
+	if (len == 0)return len;
+	int i = 0;
+	int oneChar = 0;
+	do{
+		oneChar = (int)buffer[i];
+		machine->WriteMem(virtAddr + i, 1, oneChar);
+		i++;
+	} while (i < len && oneChar != 0);
+	return i;
+}
+
+void IncreasePC()
+{
+	int pcAfter = machine->registers[NextPCReg] + 4; // tang next PC len 4 (vi int 4 byte)
+
+	machine->registers[PrevPCReg] = machine->registers[PCReg]; // gan previous PC register = current PC register
+	machine->registers[PCReg] = machine->registers[NextPCReg]; // gan current PC register = next PC register
+	machine->registers[NextPCReg] = pcAfter;	
+}
+
+void ExceptionHandler(ExceptionType which)
 {
     int type = machine->ReadRegister(2);
-	
-	switch(which){
-		case NoException:
-			return;
-		case PageFaultException:
-			DEBUG('a', "Page Fault Error.\n");
-			printf("Page Fault Error.\n\n");
-			interrupt->Halt();
-			break;
-		case ReadOnlyException:
-			DEBUG('a', "Read Only Error.\n");
-			printf("Read Only Error.\n\n");
-			interrupt->Halt();
-			break;
-		case BusErrorException:
-			DEBUG('a', "Bus Error.\n");
-			printf("Bus Error.\n\n");
-			interrupt->Halt();
-			break;
-		case AddressErrorException:
-			DEBUG('a', "Address Error.\n");
-			printf("Address Error.\n\n");
-			interrupt->Halt();
-			break;
-		case OverflowException:
-			DEBUG('a', "Overflow Error.\n");
-			printf("Overflow Error.\n\n");
-			interrupt->Halt();
-			break;
-		case IllegalInstrException:
-			DEBUG('a', "Illegal Instruction Error.\n");
-			printf("Illegal Instruction Error.\n\n");
-			interrupt->Halt();
-			break;
 
-		case SyscallException:
-			switch(type){
-				case SC_Halt:
-					DEBUG('a', "Shutdown, initiated by user program.\n");
-					printf ("Shutdown, initiated by user program.\n\n");
-					interrupt->Halt();
-					break;
-				case SC_Exit:
-					// Handle here
-					break;
-				case SC_Exec:
-					// Handle here
-					break;
-				case SC_Join:
-					// Handle here
-					break;
-				case SC_Create:
-					// Handle here
-					break;
-				case SC_Open:
-					// Handle here
-					break;
-				case SC_Open:
-					// Handle here
-					break;
-				case SC_Read:
-					// Handle here
-					break;
-				case SC_Write:
-					// Handle here
-					break;
-				case SC_Close:
-					// Handle here
-					break;
-				case SC_Fork:
-					// Handle here
-					break;
-				case SC_Yield:
-					// Handle here
-					break;
-					
-
-				default:
-					printf("Unexpected user mode exception %d %d\n", which, type);
-					interrupt->Halt();	
+    switch(which)
+    {
+	case NoException:
+		return;
+	case PageFaultException:
+		DEBUG('a', "Page Fault Error.\n");
+		printf("Page Fault Error.\n\n");
+		interrupt->Halt();
+		break;
+	case ReadOnlyException:
+		DEBUG('a', "Read Only Error.\n");
+		printf("Read Only Error.\n\n");
+		interrupt->Halt();
+		break;
+	case BusErrorException:
+		DEBUG('a', "Bus Error.\n");
+		printf("Bus Error.\n\n");
+		interrupt->Halt();
+		break;
+	case AddressErrorException:
+		DEBUG('a', "Address Error.\n");
+		printf("Address Error.\n\n");
+		interrupt->Halt();
+		break;
+	case OverflowException:
+		DEBUG('a', "Overflow Error.\n");
+		printf("Overflow Error.\n\n");
+		interrupt->Halt();
+		break;
+	case IllegalInstrException:
+		DEBUG('a', "Illegal Instruction Error.\n");
+		printf("Illegal Instruction Error.\n\n");
+		interrupt->Halt();
+		break;
+	case SyscallException:
+		switch (type)
+		{
+			case SC_Halt:
+				DEBUG('a', "Shutdown, initiated by user program.\n");
+				printf("Shutdown, initiated by user program.\n\n");
+				interrupt->Halt();
+				break;
+ 			case SC_ReadString:
+				int virtAddr_RS;
+				int len_RS;
+				char* buffer_RS;
+				virtAddr_RS = machine->ReadRegister(4); // get buffer position
+				len_RS = machine->ReadRegister(5); // get buffer lenght
+				buffer_RS = User2System(virtAddr_RS, len_RS); // get buffer
+				printf("%d",gSynchConsole->Read(buffer_RS, len_RS)); // read buffer
+				System2User(virtAddr_RS, len_RS, buffer_RS);
+				delete[] buffer_RS;
+				IncreasePC();
+				return;
+ 			case SC_PrintString:
+			{
+				int virtAddr_PR;
+				char* buffer_PR;
+				virtAddr_PR = machine->ReadRegister(4);
+				buffer_PR = User2System(virtAddr_PR, 255);
+				int len_PR = 0;
+				if (buffer_PR != "") len_PR = int(sizeof(buffer_PR) / sizeof(buffer_PR[0]));
+				gSynchConsole->Write(buffer_PR, len_PR);
+				delete[] buffer_PR;
+				break;
 			}
-
-		default:
-			printf("Unexpected user mode exception %d %d\n", which, type);
-			// ASSERT(FALSE); chua hieu day la cai gi ???
+			default:
+				printf("Unexpected user mode exception %d %d\n", which, type);
+				interrupt->Halt();
+		}
+	break;
+	default:
+		printf("Unexpected user mode exception %d %d\n", which, type);
 	}
 }
