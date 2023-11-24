@@ -14,9 +14,9 @@ main(){
 	PrintString("\t21120530 - Nguyen Hoang Phuc\n\n");
 	
 	PrintString("--MO TA CHUONG TRINH--\n");
-	PrintString("- ascii: chuong trinh in ra bang ma ascii");
-	PrintString(", chi in cac ki tu co the thay duoc.\n");	
-	PrintString("- sort: chuong trinh nhap vao mang so nguyen ");
+	PrintString("- ascii: Chuong trinh in ra bang ma ascii");
+	PrintString(", chi in cac ki tu co the thay duoc (32-127).\n");	
+	PrintString("- sort: Chuong trinh nhap vao mang so nguyen ");
 	PrintString("de sap xep bang thuat toan bubble sort. ");
 	PrintString("Co the sap xep theo thu tu tang dan hoac giam dan.\n");
 	Halt();
