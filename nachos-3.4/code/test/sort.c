@@ -40,7 +40,7 @@ main()
 
 	//Handle valid length
 	while (n < 0 || n > MAX_LENGTH) {
-		PrintString("***ERROR: So luong khong hop le\n")
+		PrintString("***ERROR: So luong khong hop le\n");
 		PrintString("Nhap lai n: ");
 		n = ReadInt();
 	}

@@ -6,7 +6,6 @@
 
 int
 main(){
-	/*
 	PrintString("--THONG TIN NHOM--\n");
 	PrintString("\t21120262 - Nguyen Huynh Huu Khang\n");
 	PrintString("\t21120300 - Phan Thanh Ha Nguyen\n");
@@ -19,6 +18,6 @@ main(){
 	PrintString(", chi in cac ki tu co the thay duoc.\n")		
 	PrintString("- sort: chuong trinh nhap vao mang so nguyen ");
 	PrintString("de sap xep bang thuat toan bubble sort. ")
-	PrintString("Co the sap xep theo thu tu tang dan hoac giam dan.\n")*/
-	return 0;
+	PrintString("Co the sap xep theo thu tu tang dan hoac giam dan.\n")
+	Halt();
 }
