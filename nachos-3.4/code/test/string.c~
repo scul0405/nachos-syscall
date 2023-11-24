@@ -1,0 +1,11 @@
+#include "syscall.h"
+
+int main()
+{
+	char* a;
+	// test
+	ReadString(a, 255);
+	PrintString(a);
+	
+	Halt();
+}

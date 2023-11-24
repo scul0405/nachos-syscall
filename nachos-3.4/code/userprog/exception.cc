@@ -24,6 +24,7 @@
 #include "copyright.h"
 #include "system.h"
 #include "syscall.h"
+#include "console.h"
 
 //----------------------------------------------------------------------
 // ExceptionHandler
@@ -48,16 +49,168 @@
 //	are in machine.h.
 //----------------------------------------------------------------------
 
-void
-ExceptionHandler(ExceptionType which)
+char* User2System(int virtAddr, int limit)
+{
+	int i; //chi so index
+	int oneChar;
+	char* kernelBuf = NULL;
+	kernelBuf = new char[limit + 1]; //can cho chuoi terminal
+	if (kernelBuf == NULL)
+		return kernelBuf;
+		
+	memset(kernelBuf, 0, limit + 1);
+	
+	for (i = 0; i < limit; i++)
+	{
+		machine->ReadMem(virtAddr + i, 1, &oneChar);
+		kernelBuf[i] = (char)oneChar;
+		if (oneChar == 0)
+			break;
+	}
+	return kernelBuf;
+}
+
+int System2User(int virtAddr, int len, char* buffer)
+{
+	if (len < 0) return -1;
+	if (len == 0)return len;
+	int i = 0;
+	int oneChar = 0;
+	do{
+		oneChar = (int)buffer[i];
+		machine->WriteMem(virtAddr + i, 1, oneChar);
+		i++;
+	} while (i < len && oneChar != 0);
+	return i;
+}
+
+void IncreasePC()
+{
+	int pcAfter = machine->registers[NextPCReg] + 4; // tang next PC len 4 (vi int 4 byte)
+
+	machine->registers[PrevPCReg] = machine->registers[PCReg]; // gan previous PC register = current PC register
+	machine->registers[PCReg] = machine->registers[NextPCReg]; // gan current PC register = next PC register
+	machine->registers[NextPCReg] = pcAfter;	
+}
+
+void ExceptionHandler(ExceptionType which)
 {
     int type = machine->ReadRegister(2);
 
-    if ((which == SyscallException) && (type == SC_Halt)) {
-	DEBUG('a', "Shutdown, initiated by user program.\n");
-   	interrupt->Halt();
-    } else {
-	printf("Unexpected user mode exception %d %d\n", which, type);
-	ASSERT(FALSE);
-    }
+    switch(which)
+    {
+	case NoException:
+		return;
+	case PageFaultException:
+		DEBUG('a', "\nPage Fault Error.");
+		printf("\n\nPage Fault Error.");
+		interrupt->Halt();
+		break;
+	case ReadOnlyException:
+		DEBUG('a', "\nRead Only Error.");
+		printf("\n\nRead Only Error.");
+		interrupt->Halt();
+		break;
+	case BusErrorException:
+		DEBUG('a', "\nBus Error.");
+		printf("\n\nBus Error.");
+		interrupt->Halt();
+		break;
+	case AddressErrorException:
+		DEBUG('a', "\nAddress Error.");
+		printf("\n\nAddress Error.");
+		interrupt->Halt();
+		break;
+	case OverflowException:
+		DEBUG('a', "\nOverflow Error.");
+		printf("\n\nOverflow Error.");
+		interrupt->Halt();
+		break;
+	case IllegalInstrException:
+		DEBUG('a', "\nIllegal Instruction Error.");
+		printf("\n\nIllegal Instruction Error.");
+		interrupt->Halt();
+		break;
+	case SyscallException:
+		switch (type)
+		{
+			case SC_Halt:
+				DEBUG('a', "\nShutdown, initiated by user program.");
+				printf("\n\nShutdown, initiated by user program.");
+				interrupt->Halt();
+				break;
+
+      case SC_ReadChar:
+        {
+          int maxBuffer;
+          char *buffer_RC;
+          char c_RC;
+
+          maxBuffer = 255;
+          buffer_RC = new char[255];
+
+          memset(buffer_RC, 0, maxBuffer);
+
+          gSynchConsole->Read(buffer_RC, maxBuffer); // read buffer from screen        
+        c_RC = buffer_RC[0];
+        machine->WriteRegister(2, c_RC); // return c to register 2
+        
+        delete[] buffer_RC;
+        IncreasePC();
+        return;
+      }
+      case SC_PrintChar:
+        { char buffer_PC;
+
+        buffer_PC = machine->ReadRegister(4); // read the input params
+        gSynchConsole->Write(&buffer_PC, 1);
+        
+				IncreasePC();
+        return;
+        }
+ 			case SC_ReadString:
+        {	int virtAddr_RS;
+				int len_RS;
+				char* buffer_RS;
+				virtAddr_RS = machine->ReadRegister(4); // get buffer position
+				len_RS = machine->ReadRegister(5); // get buffer length
+				buffer_RS = User2System(virtAddr_RS, len_RS); // get buffer
+				gSynchConsole->Read(buffer_RS, len_RS); // read buffer
+				System2User(virtAddr_RS, len_RS, buffer_RS); // return to user
+				delete buffer_RS;
+				IncreasePC();
+				return; }
+ 			case SC_PrintString:
+        { int virtAddr_PR;
+				char* buffer_PR;
+				int len_PR;
+				
+        			virtAddr_PR = machine->ReadRegister(4); // get buffer position
+				buffer_PR = User2System(virtAddr_PR, 255); // get buffer
+        			len_PR = 1;
+
+				while(buffer_PR[len_PR] != 0 && len_PR < 255) // get buffer length and max len is 255
+				{
+					len_PR++;
+				}
+				gSynchConsole->Write(buffer_PR, len_PR); // write buffer
+				delete buffer_PR;
+				IncreasePC();
+				return;
+        }
+      case SC_Exit:
+        int exitCode;
+        exitCode = machine->ReadRegister(4);
+
+        printf("\nProgram closed with exit code: %d", exitCode);
+				IncreasePC();
+        break;
+      
+      default:
+			printf("\nUnexpected user system call %d %d\n", which, type);
+			interrupt->Halt();
+		};
+	default:
+		printf("\nUnexpected user mode exception %d %d\n", which, type);
+	}
 }

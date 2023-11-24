@@ -29,6 +29,11 @@
 #define SC_Close	8
 #define SC_Fork		9
 #define SC_Yield	10
+<<<<<<< HEAD
+=======
+#define SC_ReadString	20
+#define SC_PrintString	21
+>>>>>>> bb87d2d74ce2709c07a56398b26ba6dac3a07ce0
 
 #ifndef IN_ASM
 
@@ -124,6 +129,15 @@ void Fork(void (*func)());
  */
 void Yield();		
 
+<<<<<<< HEAD
+=======
+// Read String
+void ReadString (char *buffer, int length);
+
+//Print String
+void PrintString (char *buffer);
+
+>>>>>>> bb87d2d74ce2709c07a56398b26ba6dac3a07ce0
 #endif /* IN_ASM */
 
 #endif /* SYSCALL_H */
