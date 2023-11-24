@@ -20,5 +20,5 @@ main(){
 	PrintString("- sort: chuong trinh nhap vao mang so nguyen ");
 	PrintString("de sap xep bang thuat toan bubble sort. ")
 	PrintString("Co the sap xep theo thu tu tang dan hoac giam dan.\n")*/
-	return 0;
+	Halt();
 }
