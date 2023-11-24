@@ -102,41 +102,41 @@ void ExceptionHandler(ExceptionType which)
 	case NoException:
 		return;
 	case PageFaultException:
-		DEBUG('a', "Page Fault Error.\n");
-		printf("Page Fault Error.\n\n");
+		DEBUG('a', "\nPage Fault Error.");
+		printf("\n\nPage Fault Error.");
 		interrupt->Halt();
 		break;
 	case ReadOnlyException:
-		DEBUG('a', "Read Only Error.\n");
-		printf("Read Only Error.\n\n");
+		DEBUG('a', "\nRead Only Error.");
+		printf("\n\nRead Only Error.");
 		interrupt->Halt();
 		break;
 	case BusErrorException:
-		DEBUG('a', "Bus Error.\n");
-		printf("Bus Error.\n\n");
+		DEBUG('a', "\nBus Error.");
+		printf("\n\nBus Error.");
 		interrupt->Halt();
 		break;
 	case AddressErrorException:
-		DEBUG('a', "Address Error.\n");
-		printf("Address Error.\n\n");
+		DEBUG('a', "\nAddress Error.");
+		printf("\n\nAddress Error.");
 		interrupt->Halt();
 		break;
 	case OverflowException:
-		DEBUG('a', "Overflow Error.\n");
-		printf("Overflow Error.\n\n");
+		DEBUG('a', "\nOverflow Error.");
+		printf("\n\nOverflow Error.");
 		interrupt->Halt();
 		break;
 	case IllegalInstrException:
-		DEBUG('a', "Illegal Instruction Error.\n");
-		printf("Illegal Instruction Error.\n\n");
+		DEBUG('a', "\nIllegal Instruction Error.");
+		printf("\n\nIllegal Instruction Error.");
 		interrupt->Halt();
 		break;
 	case SyscallException:
 		switch (type)
 		{
 			case SC_Halt:
-				DEBUG('a', "Shutdown, initiated by user program.\n");
-				printf("Shutdown, initiated by user program.\n\n");
+				DEBUG('a', "\nShutdown, initiated by user program.");
+				printf("\n\nShutdown, initiated by user program.");
 				interrupt->Halt();
 				break;
  			case SC_ReadString:
@@ -148,7 +148,7 @@ void ExceptionHandler(ExceptionType which)
 				buffer_RS = User2System(virtAddr_RS, len_RS); // get buffer
 				gSynchConsole->Read(buffer_RS, len_RS); // read buffer
 				System2User(virtAddr_RS, len_RS, buffer_RS); // return to user
-				delete[] buffer_RS;
+				delete buffer_RS;
 				IncreasePC();
 				break;
  			case SC_PrintString:
@@ -158,21 +158,22 @@ void ExceptionHandler(ExceptionType which)
 				virtAddr_PR = machine->ReadRegister(4); // get buffer position
 				buffer_PR = User2System(virtAddr_PR, 255); // get buffer
 				int len_PR = 1;
-				while(buffer_PR[len_PR] != 0) // get buffer length
+				while(buffer_PR[len_PR] != 0 && len_PR < 255) // get buffer length and max len is 255
 				{
 					len_PR++;
 				}
 				gSynchConsole->Write(buffer_PR, len_PR); // write buffer
-				delete[] buffer_PR;
+				delete buffer_PR;
 				IncreasePC();
-				return;
+				break;
 			}
 			default:
-				printf("Unexpected user mode exception %d %d\n", which, type);
+				printf("\nUnexpected user mode exception %d %d\n", which, type);
 				interrupt->Halt();
+				break;
 		}
-	break;
+		break;
 	default:
-		printf("Unexpected user mode exception %d %d\n", which, type);
+		printf("\nUnexpected user mode exception %d %d\n", which, type);
 	}
 }
