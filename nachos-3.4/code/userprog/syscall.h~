@@ -127,10 +127,10 @@ void Fork(void (*func)());
 void Yield();		
 
 // Read String
-
+void ReadString (char *buffer, int length);
 
 //Print String
-
+void PrintString (char *buffer);
 
 #endif /* IN_ASM */
 
