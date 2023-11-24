@@ -2,8 +2,9 @@
 
 int main()
 {
-	char* a;
-	ReadString(a, 100);
+	char a[255];
+	// test
+	ReadString(a, 255);
 	PrintString(a);
 	Halt();
 }
