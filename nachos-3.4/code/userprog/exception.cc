@@ -183,8 +183,6 @@ void ExceptionHandler(ExceptionType which)
 				}
 
 				if (isInteger) {
-					printf("  Valid number ! ");
-					DEBUG('a', "\nValid number ! ");
 					machine->WriteRegister(2, number);
 				}
 				else {
@@ -195,7 +193,7 @@ void ExceptionHandler(ExceptionType which)
 			
 				delete str;
 				IncreasePC();
-				break;	
+				return;	
 			}
 			case SC_PrintInt:
 			{
@@ -238,7 +236,7 @@ void ExceptionHandler(ExceptionType which)
 				buffer[digitCount + startIndex] = '\0';
 				gSynchConsole->Write(buffer, digitCount + startIndex);
 				IncreasePC();
-				break;
+				return;
 
 			}			
 

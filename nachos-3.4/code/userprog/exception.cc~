@@ -139,7 +139,6 @@ void ExceptionHandler(ExceptionType which)
 				printf("\n\nShutdown, initiated by user program.");
 				interrupt->Halt();
 				break;
-<<<<<<< HEAD
 			case SC_ReadInt:
 			{
 				char* str;
@@ -184,19 +183,19 @@ void ExceptionHandler(ExceptionType which)
 				}
 
 				if (isInteger) {
-					printf("Valid number ! ");
+					printf("  Valid number ! ");
 					DEBUG('a', "\nValid number ! ");
 					machine->WriteRegister(2, number);
 				}
 				else {
-					printf("Invalid number ! ");
+					printf("  Invalid number ! ");
 					DEBUG('a', "\nERROR: Invalid number ! ");
 					machine->WriteRegister(2, 0);
 				}
 			
 				delete str;
 				IncreasePC();
-				break;	
+				return;	
 			}
 			case SC_PrintInt:
 			{
@@ -239,10 +238,9 @@ void ExceptionHandler(ExceptionType which)
 				buffer[digitCount + startIndex] = '\0';
 				gSynchConsole->Write(buffer, digitCount + startIndex);
 				IncreasePC();
-				break;
+				return;
 
 			}			
-=======
 
       case SC_ReadChar:
         {
@@ -272,7 +270,6 @@ void ExceptionHandler(ExceptionType which)
 				IncreasePC();
         return;
         }
->>>>>>> daa0f8cedd0977c2a178bd71c29c6cfa716022dd
  			case SC_ReadString:
         {	int virtAddr_RS;
 				int len_RS;
@@ -282,49 +279,23 @@ void ExceptionHandler(ExceptionType which)
 				buffer_RS = User2System(virtAddr_RS, len_RS); // get buffer
 				gSynchConsole->Read(buffer_RS, len_RS); // read buffer
 				System2User(virtAddr_RS, len_RS, buffer_RS); // return to user
-<<<<<<< HEAD
-				delete[] buffer_RS;
-				IncreasePC();
-				break;
-=======
 				delete buffer_RS;
 				IncreasePC();
 				return; }
->>>>>>> daa0f8cedd0977c2a178bd71c29c6cfa716022dd
  			case SC_PrintString:
         { int virtAddr_PR;
 				char* buffer_PR;
-<<<<<<< HEAD
-				virtAddr_PR = machine->ReadRegister(4); // get buffer position
-				buffer_PR = User2System(virtAddr_PR, 255); // get buffer
-				int len_PR = 1;
-				while(buffer_PR[len_PR] != 0) // get buffer length
-=======
 				int len_PR;
 				
-        virtAddr_PR = machine->ReadRegister(4); // get buffer position
+        			virtAddr_PR = machine->ReadRegister(4); // get buffer position
 				buffer_PR = User2System(virtAddr_PR, 255); // get buffer
-        len_PR = 1;
+        			len_PR = 1;
 
-				while(buffer_PR[len_PR] != 0) // get buffer length
-				int len_PR = 1;
 				while(buffer_PR[len_PR] != 0 && len_PR < 255) // get buffer length and max len is 255
->>>>>>> daa0f8cedd0977c2a178bd71c29c6cfa716022dd
 				{
 					len_PR++;
 				}
 				gSynchConsole->Write(buffer_PR, len_PR); // write buffer
-<<<<<<< HEAD
-				delete[] buffer_PR;
-				IncreasePC();
-				return;
-			}
-			default:
-				printf("Unexpected user mode exception %d %d\n", which, type);
-				interrupt->Halt();
-		}
-	break;
-=======
 				delete buffer_PR;
 				IncreasePC();
 				return;
@@ -341,7 +312,6 @@ void ExceptionHandler(ExceptionType which)
 			printf("\nUnexpected user system call %d %d\n", which, type);
 			interrupt->Halt();
 		};
->>>>>>> daa0f8cedd0977c2a178bd71c29c6cfa716022dd
 	default:
 		printf("\nUnexpected user mode exception %d %d\n", which, type);
 	}

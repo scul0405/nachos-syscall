@@ -33,7 +33,6 @@ main()
 {
     int i, j, tmp;
 	int order, n, a[MAX_LENGTH+1];
-	/*
 	//Input array length
 	PrintString("Nhap so luong phan tu mang: ");
 	n = ReadInt();
@@ -81,6 +80,5 @@ main()
 		PrintChar(' ');
 	}
 	PrintChar('\n');
-	*/
 	Halt();
 }
