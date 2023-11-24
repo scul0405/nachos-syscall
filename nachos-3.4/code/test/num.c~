@@ -2,8 +2,6 @@
 
 int main()
 {
-	char* a;
-	ReadString(a, 100);
-	PrintString(a);
+	int number = ReadInt();
 	return 0;
 }

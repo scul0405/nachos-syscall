@@ -29,6 +29,8 @@
 #define SC_Close	8
 #define SC_Fork		9
 #define SC_Yield	10
+#define SC_ReadInt	11
+#define SC_PrintInt	12
 #define SC_ReadString	20
 #define SC_PrintString	21
 
@@ -124,7 +126,13 @@ void Fork(void (*func)());
 /* Yield the CPU to another runnable thread, whether in this address space 
  * or not. 
  */
-void Yield();		
+void Yield();	
+
+// Read Int
+int ReadInt();	
+
+// Print Int
+void PrintInt(int number);
 
 // Read String
 void ReadString (char buffer[], int length);
