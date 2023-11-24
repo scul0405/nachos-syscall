@@ -185,12 +185,10 @@ void ExceptionHandler(ExceptionType which)
 				char* buffer_PR;
 				int len_PR;
 				
-        virtAddr_PR = machine->ReadRegister(4); // get buffer position
+        			virtAddr_PR = machine->ReadRegister(4); // get buffer position
 				buffer_PR = User2System(virtAddr_PR, 255); // get buffer
-        len_PR = 1;
+        			len_PR = 1;
 
-				while(buffer_PR[len_PR] != 0) // get buffer length
-				int len_PR = 1;
 				while(buffer_PR[len_PR] != 0 && len_PR < 255) // get buffer length and max len is 255
 				{
 					len_PR++;

@@ -209,7 +209,7 @@ void ExceptionHandler(ExceptionType which)
         break;
       
       default:
-			printf("\nUnexpected user mode exception %d %d\n", which, type);
+			printf("\nUnexpected user system call %d %d\n", which, type);
 			interrupt->Halt();
 		};
 	default:
