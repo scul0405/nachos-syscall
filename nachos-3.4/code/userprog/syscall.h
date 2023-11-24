@@ -29,13 +29,10 @@
 #define SC_Close	8
 #define SC_Fork		9
 #define SC_Yield	10
-<<<<<<< HEAD
 #define SC_ReadInt	11
 #define SC_PrintInt	12
-=======
 #define SC_ReadChar 18
 #define SC_PrintChar 19
->>>>>>> daa0f8cedd0977c2a178bd71c29c6cfa716022dd
 #define SC_ReadString	20
 #define SC_PrintString	21
 
