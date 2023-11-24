@@ -1,0 +1,8 @@
+*.o
+nachos
+halt
+matmult
+shell
+sort
+string
+*.coff

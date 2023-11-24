@@ -5,5 +5,5 @@ int main() {
   c = ReadChar();
   PrintChar(c);
   
-  Halt();
+  return 0;
 }
