@@ -139,6 +139,108 @@ void ExceptionHandler(ExceptionType which)
 				printf("\n\nShutdown, initiated by user program.");
 				interrupt->Halt();
 				break;
+			case SC_ReadInt:
+			{
+				char* str;
+				int MAX_LENGTH = 255;	
+				str = new char[255];
+
+				memset(str, 0, MAX_LENGTH);
+
+				int lenStr = gSynchConsole->Read(str, 255);
+
+				// Dam bao chuoi ket thuc dung cach
+				if (str[lenStr - 1] == '\n') {
+					str[lenStr - 1] = '\0';
+				}		
+
+				// Kiem tra va in ket qua
+				bool isInteger = true;
+				bool isNegative = false;
+				int number = 0;
+				int startIndex = 0;
+
+				// Kiem tra so am hay so duong
+				if (str[0] == '-') {
+					isNegative = true;
+					startIndex = 1;
+				} 
+				else if (str[0] == '+') {
+					startIndex = 1;
+				}
+
+				// Kiem tra tung ky tu trong chuoi
+				for (int i = startIndex; str[i] != '\0'; i++) {
+					if (str[i] < '0' || str[i] > '9') {
+						isInteger = false;
+						break;
+					}
+					number = number * 10 + (str[i] - '0');
+				}
+
+				if (isNegative) {
+					number = -number;
+				}
+
+				if (isInteger) {
+					printf("  Valid number ! ");
+					DEBUG('a', "\nValid number ! ");
+					machine->WriteRegister(2, number);
+				}
+				else {
+					printf("  Invalid number ! ");
+					DEBUG('a', "\nERROR: Invalid number ! ");
+					machine->WriteRegister(2, 0);
+				}
+			
+				delete str;
+				IncreasePC();
+				break;	
+			}
+			case SC_PrintInt:
+			{
+				int number = machine->ReadRegister(4);
+				int temp;
+				int digitCount = 0;
+    				bool isNegative = false;
+
+				// Kiem tra so am
+				if (number < 0) {
+					isNegative = true;
+        				temp = -number;
+				}
+				temp = number;
+
+				// Truong hop number == 0
+				if (number == 0) {
+					digitCount = 1;
+				}
+
+				while (temp != 0) {
+					temp /= 10;
+					digitCount++;
+				}
+				
+				char buffer[100];
+				int startIndex = 0;
+
+				if (isNegative) {
+					buffer[0] = '-';
+					startIndex = 1;
+					number = -number;
+				}
+		
+				for (int i = digitCount + startIndex - 1; i >= startIndex; i--) {
+					buffer[i] = '0' + (number % 10);
+					number /= 10;
+				}
+
+				buffer[digitCount + startIndex] = '\0';
+				gSynchConsole->Write(buffer, digitCount + startIndex);
+				IncreasePC();
+				break;
+
+			}			
 
       case SC_ReadChar:
         {
