@@ -1,7 +1,0 @@
-*.o
-nachos
-halt
-matmult
-shell
-sort
-*.coff
