@@ -140,6 +140,11 @@ void ExceptionHandler(ExceptionType which)
 				interrupt->Halt();
 				break;
 			case SC_ReadInt:
+			/*
+				Input: khong
+				Output: tra ve so nguyen doc tu console
+				Chuc nang: doc mot so nguyen tu console
+			*/
 			{
 				char* str;
 				int MAX_LENGTH = 255;	
@@ -196,6 +201,11 @@ void ExceptionHandler(ExceptionType which)
 				return;	
 			}
 			case SC_PrintInt:
+			/*
+				Input: 1 so nguyen
+				Output: khong
+				Chuc nang: in so nguyen ra man hinh console
+			*/
 			{
 				int number = machine->ReadRegister(4);
 				int temp;
@@ -219,6 +229,7 @@ void ExceptionHandler(ExceptionType which)
 					digitCount++;
 				}
 				
+				// Chuyen doi tu int sang char[] de in ra man hinh
 				char buffer[100];
 				int startIndex = 0;
 
