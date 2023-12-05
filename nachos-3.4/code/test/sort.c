@@ -56,13 +56,14 @@ main()
 	PrintString("Nhap thu tu muon sap xep ");
 	PrintString("[0 - tang dan, 1 - giam dan] : ");
 	order = ReadInt();
+	//handle valid order
 	while (order != 0 && order != 1) {
 		PrintString("***ERROR: Thu tu khong hop le\n");
 		PrintString("Nhap thu tu muon sap xep: ");
 		order = ReadInt();
 	}
 
-	//Sort
+	//Sort - bubble sort
 	for (i = 0; i < n - 1; ++i) {
 		for (j = i + 1; j < n; ++j) {
 			if (!compare(a+i, a+j, order)){
