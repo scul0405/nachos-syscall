@@ -280,7 +280,13 @@ void ExceptionHandler(ExceptionType which)
 				return;
 			}
 			case SC_ReadString:
-			{	
+			/*
+				Input: mot chuoi ky tu
+				Output: khong
+				Chuc nang: doc mot chuoi ky tu ra man hinh
+			*/
+			{
+				
 				int virtAddr_RS;
 				int len_RS;
 				char* buffer_RS;
@@ -294,6 +300,11 @@ void ExceptionHandler(ExceptionType which)
 				return; 
 			}
 			case SC_PrintString:
+			/*
+				Input: mot chuoi ky tu
+				Output: khong
+				Chuc nang: xuat mot chuoi ky tu ra man hinh
+			*/
 			{ 
 				int virtAddr_PR;
 				char* buffer_PR;
