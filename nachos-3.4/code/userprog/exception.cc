@@ -240,36 +240,48 @@ void ExceptionHandler(ExceptionType which)
 
 			}			
 
-      case SC_ReadChar:
-        {
-          int maxBuffer;
-          char *buffer_RC;
-          char c_RC;
+			case SC_ReadChar:
+			/*
+				Input: khong
+				Output: mot ky tu
+				Chuc nang: doc mot ky tu tu man hinh
+			*/
+			{
+				int maxBuffer;
+				char *buffer_RC;
+				char c_RC;
 
-          maxBuffer = 255;
-          buffer_RC = new char[255];
+				maxBuffer = 255;
+				buffer_RC = new char[255];
 
-          memset(buffer_RC, 0, maxBuffer);
+				memset(buffer_RC, 0, maxBuffer);
 
-          gSynchConsole->Read(buffer_RC, maxBuffer); // read buffer from screen        
-        c_RC = buffer_RC[0];
-        machine->WriteRegister(2, c_RC); // return c to register 2
-        
-        delete[] buffer_RC;
-        IncreasePC();
-        return;
-      }
-      case SC_PrintChar:
-        { char buffer_PC;
-
-        buffer_PC = machine->ReadRegister(4); // read the input params
-        gSynchConsole->Write(&buffer_PC, 1);
-        
+				gSynchConsole->Read(buffer_RC, maxBuffer); // read buffer from screen        
+				c_RC = buffer_RC[0];
+				machine->WriteRegister(2, c_RC); // return c to register 2
+				
+				delete[] buffer_RC;
 				IncreasePC();
-        return;
-        }
- 			case SC_ReadString:
-        {	int virtAddr_RS;
+				return;
+			}
+			case SC_PrintChar:
+			/*
+				Input: mot ky tu
+				Output: khong
+				Chuc nang: xuat mot ky tu ra man hinh
+			*/
+			{ 
+				char buffer_PC;
+
+				buffer_PC = machine->ReadRegister(4); // read the input params
+				gSynchConsole->Write(&buffer_PC, 1);
+				
+						IncreasePC();
+				return;
+			}
+			case SC_ReadString:
+			{	
+				int virtAddr_RS;
 				int len_RS;
 				char* buffer_RS;
 				virtAddr_RS = machine->ReadRegister(4); // get buffer position
@@ -279,36 +291,38 @@ void ExceptionHandler(ExceptionType which)
 				System2User(virtAddr_RS, len_RS, buffer_RS); // return to user
 				delete buffer_RS;
 				IncreasePC();
-				return; }
- 			case SC_PrintString:
-        { int virtAddr_PR;
+				return; 
+			}
+			case SC_PrintString:
+			{ 
+				int virtAddr_PR;
 				char* buffer_PR;
 				int len_PR;
 				
-        			virtAddr_PR = machine->ReadRegister(4); // get buffer position
+				virtAddr_PR = machine->ReadRegister(4); // get buffer position
 				buffer_PR = User2System(virtAddr_PR, 255); // get buffer
-        			len_PR = 1;
-
+				len_PR = 1;
+				
 				while(buffer_PR[len_PR] != 0 && len_PR < 255) // get buffer length and max len is 255
 				{
 					len_PR++;
 				}
+				
 				gSynchConsole->Write(buffer_PR, len_PR); // write buffer
 				delete buffer_PR;
 				IncreasePC();
 				return;
-        }
-      case SC_Exit:
-        int exitCode;
-        exitCode = machine->ReadRegister(4);
-
-        printf("\nProgram closed with exit code: %d", exitCode);
+			}
+			case SC_Exit:
+				int exitCode;
+				exitCode = machine->ReadRegister(4);
+				printf("\nProgram closed with exit code: %d", exitCode);
 				IncreasePC();
-        break;
-      
-      default:
-			printf("\nUnexpected user system call %d %d\n", which, type);
-			interrupt->Halt();
+				break;
+			
+			default:
+				printf("\nUnexpected user system call %d %d\n", which, type);
+				interrupt->Halt();
 		};
 	default:
 		printf("\nUnexpected user mode exception %d %d\n", which, type);
