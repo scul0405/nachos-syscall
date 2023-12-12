@@ -341,7 +341,45 @@ void ExceptionHandler(ExceptionType which)
 				printf("\nProgram closed with exit code: %d", exitCode);
 				IncreasePC();
 				break;
-			
+			case SC_Exec:
+			/*
+				Input: mot chuoi ky tu
+				Output: khong
+				Chuc nang: xuat mot chuoi ky tu ra man hinh
+			*/
+			{
+				int virtAddr;
+				virtAddr = machine->ReadRegister(4);	// get filename position
+				char* filename;
+				filename = User2System(virtAddr, 255); // get filename
+	
+			if (filename == NULL)
+			{
+				printf("\nNot enough memory in System");
+				machine->WriteRegister(2, -1);
+				IncreasePC();
+				return;
+			}
+
+			OpenFile *oFile = fileSystem->Open(filename);
+
+			if (oFile == NULL)
+			{
+				printf("\nUnable to open file %s", filename);
+				machine->WriteRegister(2,-1);
+				IncreasePC();
+				return;
+			}
+
+			delete oFile;
+
+			int id = gPTable->ExecUpdate(filename);
+			machine->WriteRegister(2,id);
+
+			delete[] filename;	
+			IncreasePC();
+			return;
+		}
 			default:
 				printf("\nUnexpected user system call %d %d\n", which, type);
 				interrupt->Halt();

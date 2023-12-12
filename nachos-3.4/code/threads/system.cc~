@@ -30,6 +30,9 @@ SynchDisk   *synchDisk;
 #ifdef USER_PROGRAM	// requires either FILESYS or FILESYS_STUB
 Machine *machine;	// user program memory and registers
 SynchConsole* gSynchConsole;
+BitMap* gBitMap;
+Semaphore* gSemaphore;
+PTable* gPTable;
 #endif
 
 #ifdef NETWORK
@@ -151,6 +154,9 @@ Initialize(int argc, char **argv)
 #ifdef USER_PROGRAM
     machine = new Machine(debugUserProg);	// this must come first
     gSynchConsole = new SynchConsole();
+    gBitMap = new BitMap(256);
+    gSemaphore = new Semaphore("gSemaphore",1);
+   
 #endif
 
 #ifdef FILESYS
@@ -180,7 +186,8 @@ Cleanup()
     
 #ifdef USER_PROGRAM
     delete machine;
-    delete gSynchConsole
+    delete gSynchConsole;
+    delete gBitMap;
 #endif
 
 #ifdef FILESYS_NEEDED
