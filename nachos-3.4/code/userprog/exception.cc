@@ -380,6 +380,43 @@ void ExceptionHandler(ExceptionType which)
 			IncreasePC();
 			return;
 		}
+			case SC_Join:
+			{
+				//get process id
+				int pid = machine->ReadRegister(R4);
+
+				//JoinUpdate return exit code, if there is no error, exit code = 0;
+				int exitCode = pTab->JoinUpdate(pid);
+		
+				//return exit code
+				machine->WriteRegister(R2, exitCode);
+
+				//increase program counter
+				machine->IncreasePC();
+
+				return;
+			}
+			case SC_Exit:
+			{
+				//Get exit code from join process
+				int joinExitCode = machine->ReadRegister(4);
+				
+				//If any erros => stop process
+				if(joinExitCode != 0)
+				{
+					machine->IncreasePC();
+					return;
+				
+				}			
+			
+				int exitCode = pTab->ExitUpdate(exitStatus);
+				//machine->WriteRegister(2, res);
+
+				currentThread->FreeSpace();
+				currentThread->Finish();
+				machine->IncreasePC();
+				return;
+			}
 			default:
 				printf("\nUnexpected user system call %d %d\n", which, type);
 				interrupt->Halt();
