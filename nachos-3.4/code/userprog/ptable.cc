@@ -77,11 +77,66 @@ int PTable::ExecUpdate(char* name)
 
 int PTable::JoinUpdate(int id)
 {
+	if(pID <= 0 || pID > 9)
+	{
+		printf("\nLoi: Khong ton tai process: id = %d\n",pID);
+		return -1;
+	}
+
+	if (pcb[pID] == NULL)
+	{
+		printf("Loi: Khong ton tai process id nay!");
+		return -1;
+	}
+
+	//kiem tra tien trinh dang chay co la cha cua tien trinh can join hay khong
+	if(currentThread->processID != pcb[pID]->parentID)
+	{
+		printf("\nLoi: Ko duoc phep join vao tien trinh khong phai cha cua no !!!\n");
+		return -1;
+	}
+	/////////////////////////////////////////////////////////////////////////////////////////////
+
+	pcb[pID]->JoinWait(); 	//doi den khi tien trinh con ket thuc
+
+	int ec = pcb[pID]->GetExitCode();
+
+	if(ec != 0)
+	{
+		printf("\nProcess exit with exitcode EC = %d ",ec);
+		return ec;
+	}
+	
+	pcb[pID]->ExitRelease();	//cho phep tien trinh con ket thuc
+	
 	return 0;
 }
-int PTable::ExitUpdate(int exitcode)
+int PTable::ExitUpdate(int ec)
 {              
-	return 0;
+	//Kiem tra pID co ton tai khong
+	int pID= currentThread->processID;
+	if(!IsExist(pID))
+	{
+		printf("\nLoi: Tien trinh khong ton tai !!!\n");
+		return -1;
+	}
+
+	//Neu la main process thi Halt()
+	if(pID==0)
+	{
+		interrupt->Halt();
+		return 0;
+	}
+	
+	//Goi SetExitCode de dat exitcode cho tien trinh goi
+	pcb[pID]->SetExitCode(ec);
+	
+	//Exit join
+	pcb[pID]->JoinRelease();
+	pcb[pID]->ExitWait();
+	Remove(pID);
+
+	return ec;
 }
 
 int PTable::GetFreeSlot()
