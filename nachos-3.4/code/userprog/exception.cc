@@ -26,6 +26,8 @@
 #include "syscall.h"
 #include "console.h"
 
+#define MaxFileLength 32
+
 //----------------------------------------------------------------------
 // ExceptionHandler
 // 	Entry point into the Nachos kernel.  Called when a user program
@@ -334,6 +336,65 @@ void ExceptionHandler(ExceptionType which)
 				delete buffer_PR;
 				IncreasePC();
 				return;
+			}
+
+			case SC_CreateFile:
+			{
+				int virtAddr;
+				char* filename;
+
+				printf("\nSC_Create call ...");
+				DEBUG('a',"\n SC_Create call ...");
+				DEBUG('a',"\n Reading virtual address of filename");
+
+				// check for exception
+				virtAddr = machine->ReadRegister(4);
+				DEBUG ('a',"\n Reading filename.");
+
+				filename = User2System(virtAddr,MaxFileLength + 1); // MaxFileLength = 32
+
+				// Neu khong lay duoc ten file
+				if (filename == NULL)
+				{
+					printf("\n Not enough memory in system");
+					DEBUG('a',"\n Not enough memory in system");
+					machine->WriteRegister(2,-1); // Tra ve -1 o thanh ghi R2
+					delete filename;
+					IncreasePC();
+					return;
+				}
+
+				// Neu nguoi dung khong nhap ten file
+				if (strlen(filename) == 0)
+				{
+					printf("\n INVALID filename");
+					DEBUG('a',"\n INVALID filename");
+					machine->WriteRegister(2,-1); // Tra ve -1 o thanh ghi R2
+					delete filename;
+					IncreasePC();
+					return;	
+				}
+
+				DEBUG('a',"\n Finish reading filename.");
+
+				// Dung fileSystem cua OpenFile class de tao file
+				if (!fileSystem->Create(filename, 0))
+				{
+					// Tao file loi
+					printf("\n Error create file '%s'",filename);
+					machine->WriteRegister(2,-1);
+					delete filename;
+					IncreasePC();
+					return;
+				}
+
+				// Tao file
+				machine->WriteRegister(2, 0);
+				printf("\nCreate file Successfully.");
+				delete filename;
+				IncreasePC();
+				return;
+					
 			}
 			case SC_Exit:
 				int exitCode;
