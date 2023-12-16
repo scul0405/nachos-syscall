@@ -2,7 +2,11 @@
 
 int main()
 {
-	int status = CreateFile("concac.txt");	
+	int a = CreateFile("test1.txt");
+	int status = Open("random.txt", 1);
+	PrintInt(status);
+	PrintChar('\n');
+	status = Open("test2.txt", 1);
 	PrintInt(status);
 	PrintChar('\n');
 

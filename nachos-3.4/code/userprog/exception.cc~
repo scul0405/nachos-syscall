@@ -340,10 +340,15 @@ void ExceptionHandler(ExceptionType which)
 
 			case SC_CreateFile:
 			{
+			/*
+				Input: dia chi ten file
+				Output: tra ve 0 - Success / 1 - Error
+				Chuc nang: tao 1 file bat ki
+			*/
 				int virtAddr;
 				char* filename;
 
-				printf("\n SC_Create call ...");
+				printf("\nSC_Create call ...");
 				DEBUG('a',"\n SC_Create call ...");
 				DEBUG('a',"\n Reading virtual address of filename");
 
@@ -390,11 +395,70 @@ void ExceptionHandler(ExceptionType which)
 
 				// Tao file
 				machine->WriteRegister(2, 0);
-				printf("\n Create file Successfully.");
 				delete filename;
 				IncreasePC();
 				return;
 					
+			}
+
+			case SC_Open:
+			{
+			/*
+				Input: dia chi ten file & bien so nguyen type
+				Output: tra ve OpenFileID -- Success / -1 -- Error
+				Chuc nang: tra ve ID cua file open
+			*/
+				int virtAddr;
+				int type;
+				char* filename;
+
+				DEBUG('a',"\n SC_Open call ...");
+				DEBUG('a',"\n Reading virtual address of filename");
+
+				// check for exception
+				virtAddr = machine->ReadRegister(4);		// Doc dia chi cua ten file tai thanh ghi R4
+				type = machine->ReadRegister(5);		// doc type tai thanh ghi R5
+
+				filename = User2System(virtAddr,MaxFileLength); // MaxFileLength = 32 
+
+				// Neu khong tim thay ten file
+				if (filename == "") {
+					machine->WriteRegister(2, -1);
+					delete filename;
+
+					IncreasePC();
+					return;
+				}
+				
+				int NullPos = fileSystem->findNullPos();
+
+				if (NullPos != -1)	// Neu con vi tri trong
+				{
+					// Console input
+					if (type == -2) {
+						machine->WriteRegister(2, 0);
+					}
+					// Console output
+					else if (type == -1) {
+						machine->WriteRegister(2, 1);
+					}
+					else if (type == 0 || type == 1) {
+						fileSystem->fileTable[NullPos] = fileSystem->Open(filename, type);
+
+						// Mo file thanh cong
+						if (fileSystem->fileTable[NullPos] != NULL) {
+							machine->WriteRegister(2, NullPos);
+						}
+					}
+					delete filename;
+					IncreasePC();
+					return;
+				}
+				machine->WriteRegister(2, -1);
+				delete filename;
+
+				IncreasePC();
+				return;
 			}
 			case SC_Exit:
 				int exitCode;

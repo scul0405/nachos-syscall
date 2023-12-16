@@ -141,7 +141,28 @@ FileSystem::FileSystem(bool format)
         directoryFile = new OpenFile(DirectorySector);
     }
 
-	
+    // Bang mo ta file
+    OpenFile** fileTable;
+    // Vi tri
+    int pos;
+    // Cap phat bo nho
+    fileTable = new OpenFile*[10];
+    pos = 0;
+
+    for (int i = 0; i < 10; i++) {
+        fileTable[i] = NULL;
+    }
+
+    this->Create("stdin", 0);
+    this->Create("stdout", 0);
+
+    // Console input
+    fileTable[pos] = this->Open("stdin", -2);
+    pos++;				// pos = 1
+	// Console output
+
+    fileTable[pos] = this->Open("stdout", -1);
+    pos++;	
 }
 
 //----------------------------------------------------------------------

@@ -140,9 +140,9 @@ class FileSystem {
 
     OpenFile* Open(char *name); 	// Open a file (UNIX open)
 
-    OpenFile* Open(char *name, int type); // Open File voi type
+    OpenFile* Open(char *name, int type) // Open File voi type
 
-    int findNullPos();			// Tim vi tri chua co file
+    int findNullPos()			// Tim vi tri chua co file
 
     bool Remove(char *name);  		// Delete a file (UNIX unlink)
 

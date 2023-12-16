@@ -33,7 +33,7 @@ class OpenFile {
 
     // Ham mac dinh
     OpenFile(int f) { file = f; currentOffset = 0; }	// open the file
-    OpenFile(int f, int t) { file = f; currentOffset = 0; _type = t; }	// Open File voi type
+    OpenFile(int f, int t) { file = f; currentOffset = 0; type = t; }	// Open File voi type
 
     ~OpenFile() { Close(file); }			// close the file
 
