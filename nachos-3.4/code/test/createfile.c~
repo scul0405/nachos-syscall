@@ -2,13 +2,17 @@
 
 int main()
 {
-	int a = CreateFile("test1.txt");
-	int status = Open("random.txt", 1);
-	PrintInt(status);
+	int a = CreateFile("test2.txt");
+	int open = Open("test1.txt", 1);
+	PrintInt(open);
 	PrintChar('\n');
-	status = Open("test2.txt", 1);
-	PrintInt(status);
+
+	open = Open("test2.txt", 1);
+	PrintInt(open);
 	PrintChar('\n');
+
+	Close(open);
+
 
 	Halt();
 }

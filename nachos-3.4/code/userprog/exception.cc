@@ -348,7 +348,6 @@ void ExceptionHandler(ExceptionType which)
 				int virtAddr;
 				char* filename;
 
-				printf("\nSC_Create call ...");
 				DEBUG('a',"\n SC_Create call ...");
 				DEBUG('a',"\n Reading virtual address of filename");
 
@@ -394,6 +393,7 @@ void ExceptionHandler(ExceptionType which)
 				}
 
 				// Tao file
+				printf("\nCreate file '%s' successfully.", filename);
 				machine->WriteRegister(2, 0);
 				delete filename;
 				IncreasePC();
@@ -421,7 +421,7 @@ void ExceptionHandler(ExceptionType which)
 
 				filename = User2System(virtAddr,MaxFileLength); // MaxFileLength = 32 
 
-				// Neu khong tim thay ten file
+				// Neu ten file khong co
 				if (strlen(filename) == 0) {
 					machine->WriteRegister(2, -1);
 					delete filename;
@@ -445,6 +445,11 @@ void ExceptionHandler(ExceptionType which)
 					else if (type == 0 || type == 1) {
 						fileSystem->fileTable[NullPos] = fileSystem->Open(filename, type);
 
+						// Neu khong tim thay file trong directory
+						if (fileSystem->fileTable[NullPos] == NULL) {
+							machine->WriteRegister(2, -1);
+						}
+
 						// Mo file thanh cong
 						if (fileSystem->fileTable[NullPos] != NULL) {
 							machine->WriteRegister(2, NullPos);
@@ -460,6 +465,39 @@ void ExceptionHandler(ExceptionType which)
 				IncreasePC();
 				return;
 			}
+
+			case SC_Close:
+			/*
+				Input: ID cua file
+				Output: tra ve 0 -- Success / -1 -- Error
+				Chuc nang: xoa vung nho cua file
+			*/
+			{
+				int fileID;
+						
+				// Lay tham so ID tu thanh ghi R4
+				fileID = machine->ReadRegister(4);	
+
+				// Nam trong bang mo ta [0, 9]
+				if (fileID <= 9 && fileID >= 0) {
+					// Ton tai file
+					if (fileSystem->fileTable[fileID] != NULL) {
+						delete fileSystem->fileTable[fileID];
+						fileSystem->fileTable[fileID] = NULL;
+						printf("\nClose successfully.");
+						machine->WriteRegister(2, 0);
+						IncreasePC();
+						return;				
+					}
+				}
+				
+						
+				machine->WriteRegister(2, -1);
+				IncreasePC();
+				return;	
+			
+			}
+		
 			case SC_Exit:
 				int exitCode;
 				exitCode = machine->ReadRegister(4);

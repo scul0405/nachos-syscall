@@ -267,16 +267,16 @@ FileSystem::Open(char *name, int type)
 }
 
 // Tim vi tri chua co file
-    int FileSystem::findNullPos()
-    {
-	for (int i = 0; i < 10; i++) {
-	    if (fileTable[i] == NULL) {
-		return i;
-	    }
+int FileSystem::findNullPos()
+{
+    for (int i = 0; i < 10; i++) {
+	if (fileTable[i] == NULL) {
+	    return i;
 	}
-
-	return -1; 	// NULL
     }
+
+    return -1; 	// NULL
+}
 
 //----------------------------------------------------------------------
 // FileSystem::Remove

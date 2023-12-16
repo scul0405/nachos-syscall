@@ -85,7 +85,7 @@ class FileSystem {
 	int fileDescriptor = OpenForWrite(name);
 
 	if (fileDescriptor == -1) return FALSE;
-	Close(fileDescriptor); 
+	CloseFile(fileDescriptor); 
 	return TRUE; 
 	}
 
@@ -140,9 +140,9 @@ class FileSystem {
 
     OpenFile* Open(char *name); 	// Open a file (UNIX open)
 
-    OpenFile* Open(char *name, int type) // Open File voi type
+    OpenFile* Open(char *name, int type); // Open File voi type
 
-    int findNullPos()			// Tim vi tri chua co file
+    int findNullPos();			// Tim vi tri chua co file
 
     bool Remove(char *name);  		// Delete a file (UNIX unlink)
 
