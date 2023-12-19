@@ -112,7 +112,7 @@ int Write(char *buffer, int charcount, OpenFileId id);
 int Read(char *buffer, int charcount, OpenFileId id);
 
 /* Close the file, we're done reading and writing to it. */
-void Close(OpenFileId id);
+int Close(OpenFileId id);
 
 
 

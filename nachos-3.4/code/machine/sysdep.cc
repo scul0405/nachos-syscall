@@ -247,11 +247,12 @@ Tell(int fd)
 // 	Close a file.  Abort on error.
 //----------------------------------------------------------------------
 
-void 
+int 
 Close(int fd)
 {
     int retVal = close(fd);
     ASSERT(retVal >= 0); 
+    return retVal;
 }
 
 //----------------------------------------------------------------------

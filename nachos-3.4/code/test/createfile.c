@@ -29,7 +29,7 @@ int main()
 	
 	int temp = CreateFile("test3.txt");
 	int open = Open("test3.txt", 0);
-	int w = Write("CON CAC TAO TO BANG COT DINH", 50, open);
+	int w = Write("CON TAO TO BANG COT DINH", 50, open);
 
 	PrintInt(w);
 	PrintChar('\n');

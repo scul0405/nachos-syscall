@@ -626,9 +626,9 @@ void ExceptionHandler(ExceptionType which)
 				// Lay vi tri dau tien cua file noi con tro dang tro toi
 				int beginPos = fileSystem->fileTable[id]->getCurrentOffset();
 
-				// Neu la stdout (type == -1) thi se output ra console chu khong ghi vao file
+				// Neu la stdout (type == -1) thi se output ra console chu khong ghi vao 
 				if (fileSystem->fileTable[id]->_type == -1) {
-					// Vong lap den khi gap '\n'
+					// Vong lap den khi gap '\n' hoac ket thuc chuoi '\0'
 					int i = 0;
 					for (i; ;i++) {
 						if (tempBuffer[i] == '\0' || tempBuffer[i] == '\n') {
@@ -637,11 +637,11 @@ void ExceptionHandler(ExceptionType which)
 						gSynchConsole->Write(tempBuffer + i, 1);
 					}
 					
-					// Truong hop tempBuffer[i] == '\0'
+					// Xuong dong
 					tempBuffer[i] = '\n';
 
 					gSynchConsole->Write(tempBuffer + i, 1); // Write ky tu '\n'
-					machine->WriteRegister(2, i - 1); // Tra ve so byte thuc su write duoc
+					machine->WriteRegister(2, i); // Tra ve so byte thuc su write duoc
 					delete tempBuffer;
 					IncreasePC();
 					return;
@@ -650,7 +650,7 @@ void ExceptionHandler(ExceptionType which)
 
 				// Neu la file doc va ghi
 				int checker = fileSystem->fileTable[id]->Write(tempBuffer, charcount);
-				// Doc file thanh cong
+				// Ghi file thanh cong
 				if (checker > 0) {
 					int endPos = fileSystem->fileTable[id]->getCurrentOffset();
 					int numBytes = endPos - beginPos;
