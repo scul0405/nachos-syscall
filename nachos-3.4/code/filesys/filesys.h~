@@ -85,7 +85,7 @@ class FileSystem {
 	int fileDescriptor = OpenForWrite(name);
 
 	if (fileDescriptor == -1) return FALSE;
-	CloseFile(fileDescriptor); 
+	Close(fileDescriptor); 
 	return TRUE; 
 	}
 

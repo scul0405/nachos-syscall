@@ -205,3 +205,9 @@ OpenFile::Length()
 { 
     return hdr->FileLength(); 
 }
+
+// Lay vi tri hien tai cua file
+int 
+OpenFile::getCurrentOffset() {
+	return seekPosition;
+}

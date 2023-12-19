@@ -393,7 +393,7 @@ void ExceptionHandler(ExceptionType which)
 				}
 
 				// Tao file
-				printf("\nCreate file '%s' successfully.", filename);
+				printf("\n\nCreate file '%s' successfully.", filename);
 				machine->WriteRegister(2, 0);
 				delete filename;
 				IncreasePC();
@@ -496,6 +496,176 @@ void ExceptionHandler(ExceptionType which)
 				IncreasePC();
 				return;	
 			
+			}
+
+			case SC_Read:
+			/*
+				Input: char *buffer (dia chi ten file, int charcount (so ki tu), OpenFileID id (id file)
+				Output: -1: Error / so byte thuc su: Success / -2: het file 
+				Chuc nang: doc file 
+			*/
+			{
+				// Lay dia chi ten file
+				int virtAddr = machine->ReadRegister(4);
+
+				// Lay so ki tu cho phep
+				int charcount = machine->ReadRegister(5);
+
+				// Lay id file
+				int id = machine->ReadRegister(6);
+
+				// Neu id file khong nam trong bang mo ta file
+				if (id > 9 || id < 0) {
+					printf("\nINVALID ID.");
+					machine->WriteRegister(2, -1);
+					IncreasePC();
+					return;
+				}
+
+				// Neu file khong ton tai
+				if (fileSystem->fileTable[id] == NULL) {
+					printf("\nFile doesn't exist.");
+					machine->WriteRegister(2, -1);
+					IncreasePC();
+					return;
+				}
+
+				// Neu file la stdout (type == -1)
+				if (fileSystem->fileTable[id]->_type == -1) {
+					printf("\nCannot read on stdout.");
+					machine->WriteRegister(2, -1);
+					IncreasePC();
+					return;
+				}
+
+				// Bo dem de xu li giua User Space va System Space
+				char* tempBuffer = User2System(virtAddr, charcount);
+
+				// Lay vi tri dau tien cua file noi con tro dang tro toi
+				int beginPos = fileSystem->fileTable[id]->getCurrentOffset();	
+
+				
+				// Neu file la stdin (type == -2)
+				if (fileSystem->fileTable[id]->_type == -2) {
+					// Read file va tra ve so byte thuc su doc duoc
+					int numBytes = gSynchConsole->Read(tempBuffer, charcount);
+
+					System2User(virtAddr, numBytes, tempBuffer);
+
+					// Tra ve so byte thuc su doc duoc
+					machine->WriteRegister(2, numBytes);
+					delete tempBuffer;
+					IncreasePC();
+					return;
+				}
+
+				// File binh thuong
+				int checker = fileSystem->fileTable[id]->Read(tempBuffer, charcount);
+				// Doc file thanh cong
+				if (checker > 0) {
+					int endPos = fileSystem->fileTable[id]->getCurrentOffset();
+					int numBytes = endPos - beginPos;
+
+					System2User(virtAddr, numBytes, tempBuffer);
+					machine->WriteRegister(2, numBytes);
+				} 
+				// Cuoi file -> file rong -> doc NULL
+				else {
+					printf("\nEmpty file.");
+					machine->WriteRegister(2, -2);
+				}
+
+				delete tempBuffer;
+				IncreasePC();
+				return;
+			}
+
+			case SC_Write:
+			/*
+				Input: char *buffer (noi dung can ghi vao file), int charcount (so ki tu ), OpenFileID id (id file)
+				Output: -1: Error / so byte write thuc su: Success / -2: het file 
+				Chuc nang: ghi file
+			*/
+			{
+				// Lay dia chi ten file
+				int virtAddr = machine->ReadRegister(4);
+
+				// Lay so ki tu cho phep
+				int charcount = machine->ReadRegister(5);
+
+				// Lay id file
+				int id = machine->ReadRegister(6);
+
+				// Neu id file khong nam trong bang mo ta file
+				if (id > 9 || id < 0) {
+					printf("\nINVALID ID.");
+					machine->WriteRegister(2, -1);
+					IncreasePC();
+					return;
+				}
+
+				// Neu file khong ton tai
+				if (fileSystem->fileTable[id] == NULL) {
+					printf("\nFile doesn't exist.");
+					machine->WriteRegister(2, -1);
+					IncreasePC();
+					return;
+				}
+
+				// Neu la file stdin (type == -2) || file chi doc (type == 1)
+				if (fileSystem->fileTable[id]->_type == -2 || fileSystem->fileTable[id]->_type == 1) {
+					printf("\nINVALID File Type.");
+					machine->WriteRegister(2, -1);
+					IncreasePC();
+					return;
+				}
+
+				// Bo dem de xu li giua User Space va System Space
+				char* tempBuffer = User2System(virtAddr, charcount);
+				
+				// Lay vi tri dau tien cua file noi con tro dang tro toi
+				int beginPos = fileSystem->fileTable[id]->getCurrentOffset();
+
+				// Neu la stdout (type == -1) thi se output ra console chu khong ghi vao file
+				if (fileSystem->fileTable[id]->_type == -1) {
+					// Vong lap den khi gap '\n'
+					int i = 0;
+					for (i; ;i++) {
+						if (tempBuffer[i] == '\0' || tempBuffer[i] == '\n') {
+							break;
+						}
+						gSynchConsole->Write(tempBuffer + i, 1);
+					}
+					
+					// Truong hop tempBuffer[i] == '\0'
+					tempBuffer[i] = '\n';
+
+					gSynchConsole->Write(tempBuffer + i, 1); // Write ky tu '\n'
+					machine->WriteRegister(2, i - 1); // Tra ve so byte thuc su write duoc
+					delete tempBuffer;
+					IncreasePC();
+					return;
+
+				}
+
+				// Neu la file doc va ghi
+				int checker = fileSystem->fileTable[id]->Write(tempBuffer, charcount);
+				// Doc file thanh cong
+				if (checker > 0) {
+					int endPos = fileSystem->fileTable[id]->getCurrentOffset();
+					int numBytes = endPos - beginPos;
+
+					machine->WriteRegister(2, numBytes);
+				} 
+				// Cuoi file 
+				else {
+					printf("\nEmpty file.");
+					machine->WriteRegister(2, -2);
+				}
+
+				delete tempBuffer;
+				IncreasePC();
+				return;
 			}
 		
 			case SC_Exit:
