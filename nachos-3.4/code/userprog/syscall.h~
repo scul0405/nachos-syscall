@@ -22,20 +22,17 @@
 #define SC_Exit		1
 #define SC_Exec		2
 #define SC_Join		3
-#define SC_Create	4
+#define SC_CreateFile	4
 #define SC_Open		5
 #define SC_Read		6
 #define SC_Write	7
 #define SC_Close	8
 #define SC_Fork		9
 #define SC_Yield	10
-<<<<<<< HEAD
 #define SC_ReadInt	11
 #define SC_PrintInt	12
-=======
 #define SC_ReadChar 18
 #define SC_PrintChar 19
->>>>>>> daa0f8cedd0977c2a178bd71c29c6cfa716022dd
 #define SC_ReadString	20
 #define SC_PrintString	21
 
@@ -96,15 +93,15 @@ typedef int OpenFileId;
 #define ConsoleOutput	1  
  
 /* Create a Nachos file, with "name" */
-void Create(char *name);
+int CreateFile(char *name);
 
 /* Open the Nachos file "name", and return an "OpenFileId" that can 
  * be used to read and write to the file.
  */
-OpenFileId Open(char *name);
+OpenFileId Open(char *name, int type);
 
 /* Write "size" bytes from "buffer" to the open file. */
-void Write(char *buffer, int size, OpenFileId id);
+int Write(char *buffer, int charcount, OpenFileId id);
 
 /* Read "size" bytes from the open file into "buffer".  
  * Return the number of bytes actually read -- if the open file isn't
@@ -112,7 +109,7 @@ void Write(char *buffer, int size, OpenFileId id);
  * characters to read, return whatever is available (for I/O devices, 
  * you should always wait until you can return at least one character).
  */
-int Read(char *buffer, int size, OpenFileId id);
+int Read(char *buffer, int charcount, OpenFileId id);
 
 /* Close the file, we're done reading and writing to it. */
 void Close(OpenFileId id);
@@ -133,16 +130,12 @@ void Fork(void (*func)());
  */
 void Yield();	
 
-<<<<<<< HEAD
 // Read Int
 int ReadInt();	
 
-// Read String
-void ReadString (char buffer[], int length);
+// Print Int
+void PrintInt(int number);
 
-//Print String
-void PrintString (char buffer[]);
-=======
 /*
  * Input: none
  * Output: a charactor read from screen
@@ -156,11 +149,10 @@ char ReadChar();
 void PrintChar(char character);
 
 // Read String
-void ReadString (char *buffer, int length);
+void ReadString (char buffer[], int length);
 
 //Print String
-void PrintString (char *buffer);
->>>>>>> daa0f8cedd0977c2a178bd71c29c6cfa716022dd
+void PrintString (char buffer[]);
 
 #endif /* IN_ASM */
 

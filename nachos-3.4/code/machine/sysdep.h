@@ -26,7 +26,7 @@ extern int ReadPartial(int fd, char *buffer, int nBytes);
 extern void WriteFile(int fd, char *buffer, int nBytes);
 extern void Lseek(int fd, int offset, int whence);
 extern int Tell(int fd);
-extern void Close(int fd);
+extern int Close(int fd);
 extern bool Unlink(char *name);
 
 // Interprocess communication operations, for simulating the network
