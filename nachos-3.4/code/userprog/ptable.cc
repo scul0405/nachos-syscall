@@ -75,7 +75,7 @@ int PTable::ExecUpdate(char* name)
 	return pid;
 }
 
-int PTable::JoinUpdate(int id)
+int PTable::JoinUpdate(int pID)
 {
 	if(pID <= 0 || pID > 9)
 	{

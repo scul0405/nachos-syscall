@@ -57,7 +57,5 @@ public:
 
 	int Signal(char *name);
 
-	int FindFreeSlot();
-
-	
+	int FindFreeSlot();	
 };

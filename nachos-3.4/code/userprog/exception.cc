@@ -343,7 +343,7 @@ void ExceptionHandler(ExceptionType which)
 			int semVal = machine->ReadRegister(5);
 
 			char *name = User2System(virtAddr, MaxFileLength + 1);
-			if (name == nullptr){
+			if (name == NULL){
 				DEBUG('a', "\n Not enough memory in System");
 				printf("\n Not enough memory in System");
 
@@ -370,10 +370,6 @@ void ExceptionHandler(ExceptionType which)
 			IncreasePC();
 			return;
 		}
-      case SC_Exit:
-        int exitCode;
-        exitCode = machine->ReadRegister(4);
-
 			case SC_CreateFile:
 			{
 			/*
@@ -703,13 +699,6 @@ void ExceptionHandler(ExceptionType which)
 				IncreasePC();
 				return;
 			}
-		
-			case SC_Exit:
-				int exitCode;
-				exitCode = machine->ReadRegister(4);
-				printf("\nProgram closed with exit code: %d", exitCode);
-				IncreasePC();
-				break;
 			case SC_Exec:
 			/*
 				Input: mot chuoi ky tu
@@ -752,16 +741,16 @@ void ExceptionHandler(ExceptionType which)
 			case SC_Join:
 			{
 				//get process id
-				int pid = machine->ReadRegister(R4);
+				int pid = machine->ReadRegister(4);
 
 				//JoinUpdate return exit code, if there is no error, exit code = 0;
-				int exitCode = pTab->JoinUpdate(pid);
+				int exitCode = gPTable->JoinUpdate(pid);
 		
 				//return exit code
-				machine->WriteRegister(R2, exitCode);
+				machine->WriteRegister(2, exitCode);
 
 				//increase program counter
-				machine->IncreasePC();
+				IncreasePC();
 
 				return;
 			}
@@ -773,17 +762,17 @@ void ExceptionHandler(ExceptionType which)
 				//If any erros => stop process
 				if(joinExitCode != 0)
 				{
-					machine->IncreasePC();
+					IncreasePC();
 					return;
 				
 				}			
 			
-				int exitCode = pTab->ExitUpdate(exitStatus);
+				gPTable->ExitUpdate(joinExitCode);
 				//machine->WriteRegister(2, res);
 
 				currentThread->FreeSpace();
 				currentThread->Finish();
-				machine->IncreasePC();
+				IncreasePC();
 				return;
 			}
 			default:

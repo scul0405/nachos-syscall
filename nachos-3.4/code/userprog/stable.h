@@ -13,13 +13,13 @@ private:
 	char name[100];
 	Semaphore* sem;
 public:
-	Sem(char* na, int i)
+	SemList(char* na, int i)
 	{
 		strcpy(this->name, na);
 		sem = new Semaphore(this->name, i);
 	}
 
-	~Sem()
+	~SemList()
 	{
 		if(sem)
 			delete sem;

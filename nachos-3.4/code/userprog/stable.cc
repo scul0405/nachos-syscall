@@ -6,7 +6,7 @@ STable::STable()
 	
 	for(int i =0; i < MAX_LOCK; i++)
 	{
-		this->semList[i] = nullptr;
+		this->semList[i] = NULL;
 	}
 }
 
@@ -15,14 +15,14 @@ STable::~STable()
 	if(this->bm)
 	{
 		delete this->bm;
-		this->bm = nullptr;
+		this->bm = NULL;
 	}
 	for(int i=0; i < MAX_LOCK; i++)
 	{
 		if(this->semList[i])
 		{
 			delete this->semList[i];
-			this->semList[i] = nullptr;
+			this->semList[i] = NULL;
 		}
 	}
 	
@@ -53,7 +53,7 @@ int STable::Create(char *name, int init)
 	}
 
 	// Load semaphore to semList[id]
-	this->semList[id] = new Sem(name, init);
+	this->semList[id] = new SemList(name, init);
 	return 0;
 }
 
