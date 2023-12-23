@@ -33,6 +33,8 @@ SynchConsole* gSynchConsole;
 BitMap* gBitMap;
 Semaphore* gSemaphore;
 PTable* gPTable;
+
+STable *stab;
 #endif
 
 #ifdef NETWORK
@@ -157,6 +159,8 @@ Initialize(int argc, char **argv)
     gBitMap = new BitMap(256);
     gSemaphore = new Semaphore("gSemaphore",1);
     gPTable = new PTable(10);
+
+    stab = new STable();
 #endif
 
 #ifdef FILESYS

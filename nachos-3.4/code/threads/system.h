@@ -15,6 +15,7 @@
 #include "interrupt.h"
 #include "stats.h"
 #include "timer.h"
+#include "stable.h"
 
 // Initialization and cleanup routines
 extern void Initialize(int argc, char **argv); 	// Initialization,
@@ -39,6 +40,9 @@ extern SynchConsole* gSynchConsole;
 extern BitMap* gBitMap;
 extern Semaphore* gSemaphore;
 extern PTable* gPTable;
+
+extern STable *stab;
+
 #endif
 
 #ifdef FILESYS_NEEDED 		// FILESYS or FILESYS_STUB 

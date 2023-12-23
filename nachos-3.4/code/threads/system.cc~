@@ -187,7 +187,10 @@ Cleanup()
 #ifdef USER_PROGRAM
     delete machine;
     delete gSynchConsole;
+<<<<<<< HEAD
     delete gBitMap;
+=======
+>>>>>>> e6f9a29a3c0a111bcf783025afc89a8b80059ea0
 #endif
 
 #ifdef FILESYS_NEEDED

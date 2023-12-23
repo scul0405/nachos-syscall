@@ -336,7 +336,43 @@ void ExceptionHandler(ExceptionType which)
 				delete buffer_PR;
 				IncreasePC();
 				return;
+        }
+		case SC_CreateSemaphore:
+		{
+			int virtAddr = machine->ReadRegister(4);
+			int semVal = machine->ReadRegister(5);
+
+			char *name = User2System(virtAddr, MaxFileLength + 1);
+			if (name == nullptr){
+				DEBUG('a', "\n Not enough memory in System");
+				printf("\n Not enough memory in System");
+
+				machine->WriteRegister(2, -1);
+				delete[] name;
+				IncreasePC();
+				return;			
 			}
+
+			int res = stab->Create(name, semVal);
+
+			if(res == -1) // 0 for success, -1 for failed
+			{
+				DEBUG('a', "\n Cannot create semaphore");
+				printf("\n Cannot create semaphore");
+				machine->WriteRegister(2, -1);
+				delete[] name;
+				IncreasePC();
+				return;				
+			}
+			
+			delete[] name;
+			machine->WriteRegister(2, res);
+			IncreasePC();
+			return;
+		}
+      case SC_Exit:
+        int exitCode;
+        exitCode = machine->ReadRegister(4);
 
 			case SC_CreateFile:
 			{
