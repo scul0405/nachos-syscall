@@ -754,6 +754,62 @@ void ExceptionHandler(ExceptionType which)
 
 				return;
 			}
+      
+      case SC_Wait:
+      {
+        int virtAddr = machine->ReadRegister(4);
+        
+        char* name = User2System(virtAddr, MaxFileLength + 1);
+        if (name == NULL) {
+          printf("\nSystem khong du bo nho");
+          machine->WriteRegister(2, -1); // failed
+          delete[] name;
+          return;
+        }
+
+        int result = stab->Wait(name);
+
+        if (result == -1)
+        {
+          printf("\nKhong ton tai semaphore '%s'", name);
+          machine->WriteRegister(2, -1); // failed
+          delete[] name;
+          return;
+        }
+        
+        delete[] name;
+        machine->WriteRegister(2, result); // success
+        return;
+      }
+
+      case SC_Signal: 
+      {
+        int virtAddr = machine->ReadRegister(4);
+        
+        char* name = User2System(virtAddr, MaxFileLength + 1);
+
+        if (name == NULL) {
+          printf("\nSystem khong du bo nho");
+          machine->WriteRegister(2, -1); // failed
+          delete[] name;
+          return;
+        }
+
+        int result = stab->Signal(name);
+
+        if (result == -1)
+        {
+          printf("\nKhong ton tai semaphore '%s'", name);
+          machine->WriteRegister(2, -1); // failed
+          delete[] name;
+          return;
+        }
+
+        machine->WriteRegister(2, result); // success
+        delete[] name;
+        return;
+      }
+
 			case SC_Exit:
 			{
 				//Get exit code from join process

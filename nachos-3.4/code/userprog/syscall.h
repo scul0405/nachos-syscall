@@ -37,7 +37,8 @@
 #define SC_PrintString	21
 
 #define SC_CreateSemaphore 22
-
+#define SC_Wait 23
+#define SC_Signal 24
 #ifndef IN_ASM
 
 /* The system call interface.  These are the operations the Nachos
@@ -160,6 +161,20 @@ void PrintString (char buffer[]);
 // Success: 0
 // Failed: -1
 int CreateSemaphore(char* name, int semVal);
+
+/*
+ * semaphore -> wait
+ * Success: 0
+ * Failed: -1
+ */
+int Wait(char* name);
+
+/*
+ * wake up semaphore 
+ * Success: 0
+ * Failed: -1
+ */
+int Signal(char* name);
 
 #endif /* IN_ASM */
 
