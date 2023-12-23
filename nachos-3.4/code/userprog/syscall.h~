@@ -35,6 +35,7 @@
 #define SC_PrintChar 19
 #define SC_ReadString	20
 #define SC_PrintString	21
+#define SC_Exec		30
 
 #ifndef IN_ASM
 
