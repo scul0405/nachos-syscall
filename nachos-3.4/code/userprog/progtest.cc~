@@ -46,7 +46,7 @@ StartProcess(char *filename)
 
 void StartProcess_2(int id)
 {
-    char* fileName = gPTable->GetFileName(id);
+    char* fileName = pTab->GetFileName(id);
 
     AddrSpace *space;
     space = new AddrSpace(fileName);

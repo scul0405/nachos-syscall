@@ -1,0 +1,16 @@
+#include "syscall.h"
+
+int main() {
+	int ping, pong;
+	PrintString("Pingpong is running.");
+	
+	ping = Exec("./test/ping");
+	PrintChar('A');
+	pong = Exec("./test/pong");
+	PrintChar('B');
+	Join(ping);
+	PrintChar('C');
+	Join(pong);
+	PrintChar('D');
+	Halt();
+}

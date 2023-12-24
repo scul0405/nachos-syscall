@@ -77,7 +77,7 @@ int PTable::ExecUpdate(char* name)
 
 int PTable::JoinUpdate(int pID)
 {
-	if(pID <= 0 || pID > 9)
+	if(pID < 0 || pID > 9)
 	{
 		printf("\nLoi: Khong ton tai process: id = %d\n",pID);
 		return -1;

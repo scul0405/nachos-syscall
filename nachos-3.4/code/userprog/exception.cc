@@ -710,7 +710,7 @@ void ExceptionHandler(ExceptionType which)
 				virtAddr = machine->ReadRegister(4);	// get filename position
 				char* filename;
 				filename = User2System(virtAddr, 255); // get filename
-	
+				
 			if (filename == NULL)
 			{
 				printf("\nNot enough memory in System");
@@ -720,7 +720,7 @@ void ExceptionHandler(ExceptionType which)
 			}
 
 			OpenFile *oFile = fileSystem->Open(filename);
-
+			
 			if (oFile == NULL)
 			{
 				printf("\nUnable to open file %s", filename);
@@ -728,12 +728,12 @@ void ExceptionHandler(ExceptionType which)
 				IncreasePC();
 				return;
 			}
-
+			
 			delete oFile;
 
 			int id = gPTable->ExecUpdate(filename);
-			machine->WriteRegister(2,id);
 
+			machine->WriteRegister(2,id);
 			delete[] filename;	
 			IncreasePC();
 			return;
@@ -745,10 +745,9 @@ void ExceptionHandler(ExceptionType which)
 
 				//JoinUpdate return exit code, if there is no error, exit code = 0;
 				int exitCode = gPTable->JoinUpdate(pid);
-		
+
 				//return exit code
 				machine->WriteRegister(2, exitCode);
-
 				//increase program counter
 				IncreasePC();
 

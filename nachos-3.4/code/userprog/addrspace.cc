@@ -169,7 +169,6 @@ AddrSpace::AddrSpace(char * filename)
 	 // pages to be read-only
 	 // xóa các trang này trên memory
 	 bzero(&(machine->mainMemory[pageTable[i].physicalPage*PageSize]), PageSize);
-	printf("phyPage %d \n",pageTable[i].physicalPage);
  }
  gSemaphore->V();
 
