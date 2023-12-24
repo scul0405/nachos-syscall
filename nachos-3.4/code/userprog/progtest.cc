@@ -44,6 +44,27 @@ StartProcess(char *filename)
 					// by doing the syscall "exit"
 }
 
+void StartProcess_2(int id)
+{
+    char* fileName = gPTable->GetFileName(id);
+
+    AddrSpace *space;
+    space = new AddrSpace(fileName);
+
+	if(space == NULL)
+	{
+		printf("\nPCB::Exec : Can't create AddSpace.");
+		return;
+	}
+
+    currentThread->space = space;
+
+    space->InitRegisters();		
+    space->RestoreState();		
+
+    machine->Run();		
+    ASSERT(FALSE);		
+}
 // Data structures needed for the console test.  Threads making
 // I/O requests wait on a Semaphore to delay until the I/O completes.
 

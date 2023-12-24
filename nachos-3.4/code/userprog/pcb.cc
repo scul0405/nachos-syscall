@@ -5,7 +5,7 @@
 #include "addrspace.h"
 
 
-//extern void StartProcess_2(int id);
+extern void StartProcess_2(int pid);
 
 PCB::PCB(int id)
 {
@@ -110,7 +110,7 @@ int PCB::Exec(char* filename, int id)
 	// Đặt parrentID của thread này là processID của thread gọi thực thi Exec
 	this->parentID = currentThread->processID;
 	// Gọi thực thi Fork(StartProcess_2,id) => Ta cast thread thành kiểu int, sau đó khi xử ký hàm StartProcess ta cast Thread về đúng kiểu của nó.
- 	//this->thread->Fork(StartProcess_2,id);
+ 	this->thread->Fork(StartProcess_2,id);
 
     	multex->V();
 	// Trả về id.

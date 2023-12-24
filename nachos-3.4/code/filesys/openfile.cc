@@ -27,12 +27,22 @@
 //	"sector" -- the location on disk of the file header for this file
 //----------------------------------------------------------------------
 
+// Ham mac dinh
 OpenFile::OpenFile(int sector)
 { 
     hdr = new FileHeader;
     hdr->FetchFrom(sector);
     seekPosition = 0;
 }
+
+// Open File voi type
+OpenFile::OpenFile(int sector, int type)
+{ 
+    hdr = new FileHeader;
+    hdr->FetchFrom(sector);
+    seekPosition = 0;
+    _type = type;
+} 
 
 //----------------------------------------------------------------------
 // OpenFile::~OpenFile
@@ -194,4 +204,10 @@ int
 OpenFile::Length() 
 { 
     return hdr->FileLength(); 
+}
+
+// Lay vi tri hien tai cua file
+int 
+OpenFile::getCurrentOffset() {
+	return seekPosition;
 }
