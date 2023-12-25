@@ -9,6 +9,8 @@ void main()
 	int v1, v2;		// Voi 1, voi 2
 	int v;			// Dung tich nuoc cua sinh vien
 	int flag_done_result;	// Bien co luu dau hieu doc xong file result
+	int v_len;
+	char v_str[255];
 
 	//-----------------------------------------------------------
 	
@@ -41,6 +43,7 @@ void main()
 			}
 		
 			v = 0;
+			v_len = 0;
 			flag_done_result = 0;
 			while(1)
 			{			
@@ -52,6 +55,8 @@ void main()
 				if(temp != '*')
 				{
 					v = v* 10 + (temp - 48);
+					v_str[v_len] = temp;
+					v_len++;
 				}
 				else
 				{
@@ -59,10 +64,12 @@ void main()
 					Close(fvn);
 					break;			
 				}
-			
 			}
+			v_str[v_len] = 0;
 			if(v!= 0)
 			{
+				Write(v_str, v_len, fres);
+				Write(" ", 1, fres);
 				// Dung voi 1
 				if(v1 <= v2)
 				{
@@ -75,6 +82,7 @@ void main()
 					Write("2", 1, fres);
 					
 				}
+				Write("  ", 2, fres);
 			}
 		
 			if(flag_done_result == 1)

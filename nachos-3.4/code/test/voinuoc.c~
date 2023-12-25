@@ -9,6 +9,8 @@ void main()
 	int v1, v2;		// Voi 1, voi 2
 	int v;			// Dung tich nuoc cua sinh vien
 	int flag_done_result;	// Bien co luu dau hieu doc xong file result
+	int v_len;
+	char v_str[255];
 
 	//-----------------------------------------------------------
 	
@@ -16,18 +18,18 @@ void main()
 	// Xu ly voi nuoc
 	while(1)
 	{
-		Wait("end");
+		Down("end");
 
 		// Mo file result.txt de ghi voi nao su dung
 		fres = Open("result.txt", 0);
 		if(fres == -1)
 		{		//?
-			Signal("sinhvien");
+			Up("sinhvien");
 			return;
 		}
 		while(1)
 		{
-			Wait("voinuoc");
+			Down("voinuoc");
 			temp = 0;			
 			// Mo file voi nuoc .txt de doc dung tich
 			fvn = Open("voinuoc.txt", 1);
@@ -35,12 +37,13 @@ void main()
 			{
 				//?
 				Close(fres);
-				Signal("sinhvien");
+				Up("sinhvien");
 			
 				return;
 			}
 		
 			v = 0;
+			v_len = 0;
 			flag_done_result = 0;
 			while(1)
 			{			
@@ -52,6 +55,8 @@ void main()
 				if(temp != '*')
 				{
 					v = v* 10 + (temp - 48);
+					v_str[v_len] = temp;
+					v_len++;
 				}
 				else
 				{
@@ -59,10 +64,12 @@ void main()
 					Close(fvn);
 					break;			
 				}
-			
 			}
+			v_str[v_len] = 0;
 			if(v!= 0)
 			{
+				Write(v_str, v_len, fres);
+				Write(" ", 1, fres);
 				// Dung voi 1
 				if(v1 <= v2)
 				{
@@ -81,11 +88,11 @@ void main()
 			{
 				v1 = v2 = 0;
 				Close(fres);				
-				Signal("sinhvien");
+				Up("sinhvien");
 				break;				
 			}
 
-			Signal("sinhvien");
+			Up("sinhvien");
 		}	
 	}		
 }

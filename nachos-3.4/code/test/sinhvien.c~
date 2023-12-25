@@ -50,7 +50,6 @@ void main()
 		fvn = Open("voinuoc.txt", 0);
 		if(fvn == -1)
 		{
-			PrintString("ERR open voinuoc \n");
 			Close(fsv);
 			Up("main"); // tro ve tien trinh chinh
 			return;

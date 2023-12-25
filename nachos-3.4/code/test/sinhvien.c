@@ -103,7 +103,8 @@ void main()
 			}
 			filePtr++;			
 							
-		}				
+		}
+		Close(fsv);			
 		// Ket thuc tien trinh sinhvien va voinuoc quay lai ham main
 		Up("main");			
 	}

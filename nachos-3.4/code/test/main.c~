@@ -62,6 +62,8 @@ int main()
 			Close(fout);
 			return 1;	
 		}
+
+		PrintString("TREO O DAY\n");
 		
 		fsv = Open("sinhvien.txt", 0);
 		if (fsv == -1){
@@ -69,6 +71,8 @@ int main()
 			Close(fout);
 			return 1;
 		}
+	
+		PrintString("TREO O DAY 1\n");
 		
 		while(1)
 		{

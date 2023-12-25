@@ -118,7 +118,7 @@ int main()
 				break;
 			}
 			Write(&temp, 1, fout);
-			Write(" ", 1, fout);
+			// Write(" ", 1, fout);
 			
 		}
 	}
