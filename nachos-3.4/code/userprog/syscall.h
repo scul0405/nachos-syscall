@@ -37,8 +37,8 @@
 #define SC_PrintString	21
 
 #define SC_CreateSemaphore 22
-#define SC_Wait 23
-#define SC_Signal 24
+#define SC_Down 23
+#define SC_Up 24
 #ifndef IN_ASM
 
 /* The system call interface.  These are the operations the Nachos
