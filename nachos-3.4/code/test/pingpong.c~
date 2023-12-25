@@ -2,15 +2,15 @@
 
 int main() {
 	int ping, pong;
+	
+	if(CreateSemaphore("ping",0) == -1)	return 1;
+	if(CreateSemaphore("pong",1) == -1)	return 1;
+
 	PrintString("Pingpong is running.");
 	
 	ping = Exec("./test/ping");
-	PrintChar('A');
 	pong = Exec("./test/pong");
-	PrintChar('B');
+
 	Join(ping);
-	PrintChar('C');
 	Join(pong);
-	PrintChar('D');
-	Halt();
 }
