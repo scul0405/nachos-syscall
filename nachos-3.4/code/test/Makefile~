@@ -35,11 +35,7 @@ CPP = gcc -E
 INCDIR =-I../userprog -I../threads
 CFLAGS = -G 0 -c $(INCDIR)
 
-<<<<<<< HEAD
-all: halt shell matmult sort help ascii char string num createfile
-=======
-all: halt shell matmult sort help ascii char string num createfile ping pong pingpong
->>>>>>> nguyen
+all: halt shell matmult sort help ascii char string num createfile ping pong pingpong main sinhvien voinuoc ping2 pong2 pingpong2
 
 start.o: start.s ../userprog/syscall.h
 	$(CPP) $(CPPFLAGS) start.c > strt.s
@@ -103,8 +99,6 @@ createfile.o: createfile.c
 createfile: createfile.o start.o
 	$(LD) $(LDFLAGS) start.o createfile.o -o createfile.coff
 	../bin/coff2noff createfile.coff createfile
-<<<<<<< HEAD
-=======
 
 ping.o: ping.c
 	$(CC) $(CFLAGS) -c ping.c
@@ -123,4 +117,33 @@ pingpong.o: pingpong.c
 pingpong: pingpong.o start.o
 	$(LD) $(LDFLAGS) start.o pingpong.o -o pingpong.coff
 	../bin/coff2noff pingpong.coff pingpong
->>>>>>> nguyen
+
+main.o: main.c
+	$(CC) $(CFLAGS) -c main.c
+main: main.o start.o
+	$(LD) $(LDFLAGS) start.o main.o -o main.coff
+	../bin/coff2noff main.coff main
+
+voinuoc.o: voinuoc.c
+	$(CC) $(CFLAGS) -c voinuoc.c
+voinuoc: voinuoc.o start.o
+	$(LD) $(LDFLAGS) start.o voinuoc.o -o voinuoc.coff
+	../bin/coff2noff voinuoc.coff voinuoc
+
+sinhvien.o: sinhvien.c
+	$(CC) $(CFLAGS) -c sinhvien.c
+sinhvien: sinhvien.o start.o
+	$(LD) $(LDFLAGS) start.o sinhvien.o -o sinhvien.coff
+	../bin/coff2noff sinhvien.coff sinhvien
+
+ping2.o: ping2.c
+	$(CC) $(CFLAGS) -c ping2.c
+ping2: ping2.o start.o
+	$(LD) $(LDFLAGS) start.o ping2.o -o ping2.coff
+	../bin/coff2noff ping2.coff ping2
+
+pong2.o: pong2.c
+	$(CC) $(CFLAGS) -c pong2.c
+pong2: pong2.o start.o
+	$(LD) $(LDFLAGS) start.o pong2.o -o pong2.coff
+	../bin/coff2noff pong2.coff pong2
