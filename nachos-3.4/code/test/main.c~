@@ -1,9 +1,9 @@
-include "syscall.h"
+#include "syscall.h"
 #include "copyright.h"
 
 int main()
 {
-	SpaceId fin, fout;
+	SpaceId fin, fout, fsv, fres;
 	int n = 0;
 	char temp;
 
@@ -24,13 +24,13 @@ int main()
 		return 1;
 	}
 
-	while(true)
+	while(1)
 	{
 		Read(&temp, 1, fin);
 		if(temp != '\n')
 		{
-			if(c_readFile >= '0' && c_readFile <= '9')
-				SLTD = SLTD * 10 + (c_readFile - '0');
+			if(temp >= '0' && temp <= '9')
+				n = n * 10 + (temp - '0');
 		}
 		else
 			break;
@@ -54,21 +54,21 @@ int main()
 	{
 		while(1)
 		{
-			if(Read(&c_readFile, 1, si_input) < 1)
+			if(Read(&temp, 1, fin) < 1)
 			{
-				// Doc toi cuoi file
 				break;
 			}
-			if(c_readFile != '\n')
+
+			if(temp != '\n')
 			{
-				Write(&c_readFile, 1,si_sinhvien);	
+				Write(&temp, 1, fsv);	
 			}
 			else
 				break;
 						
 		}
 		// Dong file sinhvien.txt lai
-		Close(si_sinhvien);
+		Close(fsv);
 			
 		// Goi tien trinh sinhvien hoat dong
 		Signal("sinhvien");
@@ -77,30 +77,26 @@ int main()
 		Wait("main");	
 		
 		// Thuc hien doc file tu result va ghi vao ket qua o output.txt
-		si_result = Open("result.txt", 1);
-		if(si_result == -1)
+		fres = Open("result.txt", 1);
+		if(fres == -1)
 		{
-			Close(si_input);
-			Close(si_output);
+			Close(fin);
+			Close(fout);
 			return 1;
 		}
-
-		PrintString("\n Lan thu: ");
-		PrintInt(SLTD);
-		PrintString("\n");	
 
 		// Doc cac voi vao output.txt		
 		while(1)
 		{
-			if(Read(&c_readFile, 1, si_result)  < 1)
+			if(Read(&temp, 1, fres)  < 1)
 			{
-				Write("\r\n", 2, si_output);
-				Close(si_result);
-				Signal("m_vn");
+				Write("\r\n", 2, fout);
+				Close(fres);
+				Signal("end");
 				break;
 			}
-			Write(&c_readFile, 1, si_output);
-			Write(" ", 1, si_output);
+			Write(&temp, 1, fout);
+			Write(" ", 1, fout);
 			
 		}
 	}
