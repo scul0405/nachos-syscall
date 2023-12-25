@@ -7,28 +7,26 @@ int main()
 	int n = 0, i = 0;
 	char temp;
 
-	PrintString("Yo wtf");
-
 	if(CreateSemaphore("main",0) == -1)	return 1;
 	if(CreateSemaphore("sinhvien",0) == -1)	return 1;
 	if(CreateSemaphore("voinuoc",0)	== -1)	return 1;
 	if(CreateSemaphore("end",0) == -1)	return 1;
+
+
 	if(CreateFile("output.txt") == -1)	return 1;
 
-	PrintString("Yo wtf");
 
 	fin = Open("input.txt", 1);
-	if(fin != -1) return 1;
+	if(fin == -1) return 1;
+
 
 	fout = Open("output.txt", 0);
 
-	if(fout != -1)
+	if(fout == -1)
 	{
 		Close(fin);
 		return 1;
 	}
-
-	PrintString("Yo wtf");
 
 	while(1)
 	{
@@ -42,8 +40,6 @@ int main()
 			break;
 	}
 
-	PrintString("So luong thoi diem: ");
-	PrintInt(n);
 
 	if(Exec("./test/sinhvien") == -1)
 	{
@@ -61,6 +57,19 @@ int main()
 
 	for (i; i < n; i++)
 	{
+		if (CreateFile("sinhvien.txt") == -1){
+			Close(fin);
+			Close(fout);
+			return 1;	
+		}
+		
+		fsv = Open("sinhvien.txt", 0);
+		if (fsv == -1){
+			Close(fin);
+			Close(fout);
+			return 1;
+		}
+		
 		while(1)
 		{
 			if(Read(&temp, 1, fin) < 1)
@@ -70,7 +79,7 @@ int main()
 
 			if(temp != '\n')
 			{
-				Write(&temp, 1, fsv);	
+				Write(&temp, 1, fsv);
 			}
 			else
 				break;
@@ -110,5 +119,8 @@ int main()
 		}
 	}
 
+	Close(fin);
+	Close(fout);
+	Halt();
 	return 0;
 }

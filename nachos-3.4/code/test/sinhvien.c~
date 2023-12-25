@@ -50,6 +50,7 @@ void main()
 		fvn = Open("voinuoc.txt", 0);
 		if(fvn == -1)
 		{
+			PrintString("ERR open voinuoc \n");
 			Close(fsv);
 			Up("main"); // tro ve tien trinh chinh
 			return;
@@ -60,9 +61,9 @@ void main()
 		{
 			flagVN = 0;
 			Read(&temp, 1, fsv);
-			if(tmp != ' ')
+			if(temp != ' ')
 			{
-				Write(&tmp, 1, fvn);
+				Write(&temp, 1, fvn);
 			}
 			else
 			{
@@ -104,9 +105,9 @@ void main()
 			filePtr++;			
 							
 		}				
-		// Ket thuc tien trinh sinhvien va voinuoc quay lai ham SvVn
+		// Ket thuc tien trinh sinhvien va voinuoc quay lai ham main
 		Up("main");			
 	}
-	// Quay lai ham Svvn	
+	// Quay lai ham main
 }
 

@@ -11,21 +11,22 @@ int main()
 	if(CreateSemaphore("sinhvien",0) == -1)	return 1;
 	if(CreateSemaphore("voinuoc",0)	== -1)	return 1;
 	if(CreateSemaphore("end",0) == -1)	return 1;
+
+
 	if(CreateFile("output.txt") == -1)	return 1;
 
 
 	fin = Open("input.txt", 1);
-	if(fin != -1) return 1;
+	if(fin == -1) return 1;
+
 
 	fout = Open("output.txt", 0);
 
-	if(fout != -1)
+	if(fout == -1)
 	{
 		Close(fin);
 		return 1;
 	}
-
-	PrintString("Yo wtf");
 
 	while(1)
 	{
@@ -56,6 +57,23 @@ int main()
 
 	for (i; i < n; i++)
 	{
+		if (CreateFile("sinhvien.txt") == -1){
+			Close(fin);
+			Close(fout);
+			return 1;	
+		}
+
+		PrintString("TREO O DAY\n");
+		
+		fsv = Open("sinhvien.txt", 0);
+		if (fsv == -1){
+			Close(fin);
+			Close(fout);
+			return 1;
+		}
+	
+		PrintString("TREO O DAY 1\n");
+		
 		while(1)
 		{
 			if(Read(&temp, 1, fin) < 1)
@@ -65,7 +83,7 @@ int main()
 
 			if(temp != '\n')
 			{
-				Write(&temp, 1, fsv);	
+				Write(&temp, 1, fsv);
 			}
 			else
 				break;
@@ -105,5 +123,8 @@ int main()
 		}
 	}
 
+	Close(fin);
+	Close(fout);
+	Halt();
 	return 0;
 }

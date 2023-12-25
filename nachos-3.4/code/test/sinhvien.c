@@ -104,9 +104,9 @@ void main()
 			filePtr++;			
 							
 		}				
-		// Ket thuc tien trinh sinhvien va voinuoc quay lai ham SvVn
+		// Ket thuc tien trinh sinhvien va voinuoc quay lai ham main
 		Up("main");			
 	}
-	// Quay lai ham Svvn	
+	// Quay lai ham main
 }
 
