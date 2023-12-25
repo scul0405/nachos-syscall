@@ -754,60 +754,66 @@ void ExceptionHandler(ExceptionType which)
 				return;
 			}
       
-      case SC_Wait:
-      {
-        int virtAddr = machine->ReadRegister(4);
-        
-        char* name = User2System(virtAddr, MaxFileLength + 1);
-        if (name == NULL) {
-          printf("\nSystem khong du bo nho");
-          machine->WriteRegister(2, -1); // failed
-          delete[] name;
-          return;
-        }
+		  case SC_Down:
+		  {
+		    int virtAddr = machine->ReadRegister(4);
+		    
+		    char* name = User2System(virtAddr, MaxFileLength + 1);
+		    if (name == NULL) {
+		      printf("\nSystem khong du bo nho");
+		      machine->WriteRegister(2, -1); // failed
+		      delete[] name;
+  		      IncreasePC();
+		      return;
+		    }
 
-        int result = stab->Wait(name);
+		    int result = stab->Wait(name);
 
-        if (result == -1)
-        {
-          printf("\nKhong ton tai semaphore '%s'", name);
-          machine->WriteRegister(2, -1); // failed
-          delete[] name;
-          return;
-        }
-        
-        delete[] name;
-        machine->WriteRegister(2, result); // success
-        return;
-      }
+		    if (result == -1)
+		    {
+		      printf("\nKhong ton tai semaphore '%s'", name);
+		      machine->WriteRegister(2, -1); // failed
+		      delete[] name;
+			  IncreasePC();
+		      return;
+		    }
+		    
+		    delete[] name;
+		    machine->WriteRegister(2, result); // success
+			IncreasePC();
+		    return;
+		  }
 
-      case SC_Signal: 
-      {
-        int virtAddr = machine->ReadRegister(4);
-        
-        char* name = User2System(virtAddr, MaxFileLength + 1);
+		  case SC_Up: 
+		  {
+		    int virtAddr = machine->ReadRegister(4);
+		    
+		    char* name = User2System(virtAddr, MaxFileLength + 1);
 
-        if (name == NULL) {
-          printf("\nSystem khong du bo nho");
-          machine->WriteRegister(2, -1); // failed
-          delete[] name;
-          return;
-        }
+		    if (name == NULL) {
+		      printf("\nSystem khong du bo nho");
+		      machine->WriteRegister(2, -1); // failed
+		      delete[] name;
+			  IncreasePC();
+		      return;
+		    }
 
-        int result = stab->Signal(name);
+		    int result = stab->Signal(name);
 
-        if (result == -1)
-        {
-          printf("\nKhong ton tai semaphore '%s'", name);
-          machine->WriteRegister(2, -1); // failed
-          delete[] name;
-          return;
-        }
+		    if (result == -1)
+		    {
+		      printf("\nKhong ton tai semaphore '%s'", name);
+		      machine->WriteRegister(2, -1); // failed
+		      delete[] name;
+			  IncreasePC();
+		      return;
+		    }
 
-        machine->WriteRegister(2, result); // success
-        delete[] name;
-        return;
-      }
+		    delete[] name;
+		    machine->WriteRegister(2, result); // success
+			IncreasePC();
+		    return;
+		  }
 
 			case SC_Exit:
 			{
