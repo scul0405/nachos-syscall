@@ -31,14 +31,15 @@
 #define SC_Yield	10
 #define SC_ReadInt	11
 #define SC_PrintInt	12
+#define SC_Seek 17
 #define SC_ReadChar 18
 #define SC_PrintChar 19
 #define SC_ReadString	20
 #define SC_PrintString	21
 
 #define SC_CreateSemaphore 22
-#define SC_Wait 23
-#define SC_Signal 24
+#define SC_Down 23
+#define SC_Up 24
 #ifndef IN_ASM
 
 /* The system call interface.  These are the operations the Nachos
@@ -160,6 +161,9 @@ void PrintString (char buffer[]);
 // Create Semaphore
 // Success: 0
 // Failed: -1
+
+int Seek(int pos, OpenFileId id);
+
 int CreateSemaphore(char* name, int semVal);
 
 /*

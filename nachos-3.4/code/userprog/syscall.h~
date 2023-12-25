@@ -31,12 +31,15 @@
 #define SC_Yield	10
 #define SC_ReadInt	11
 #define SC_PrintInt	12
+#define SC_Seek 17
 #define SC_ReadChar 18
 #define SC_PrintChar 19
 #define SC_ReadString	20
 #define SC_PrintString	21
-#define SC_Exec		30
 
+#define SC_CreateSemaphore 22
+#define SC_Down 23
+#define SC_Up 24
 #ifndef IN_ASM
 
 /* The system call interface.  These are the operations the Nachos
@@ -113,7 +116,7 @@ int Write(char *buffer, int charcount, OpenFileId id);
 int Read(char *buffer, int charcount, OpenFileId id);
 
 /* Close the file, we're done reading and writing to it. */
-void Close(OpenFileId id);
+int Close(OpenFileId id);
 
 
 
@@ -154,6 +157,25 @@ void ReadString (char buffer[], int length);
 
 //Print String
 void PrintString (char buffer[]);
+
+// Create Semaphore
+// Success: 0
+// Failed: -1
+int CreateSemaphore(char* name, int semVal);
+
+/*
+ * semaphore -> wait
+ * Success: 0
+ * Failed: -1
+ */
+int Wait(char* name);
+
+/*
+ * wake up semaphore 
+ * Success: 0
+ * Failed: -1
+ */
+int Signal(char* name);
 
 #endif /* IN_ASM */
 

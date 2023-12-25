@@ -337,6 +337,53 @@ void ExceptionHandler(ExceptionType which)
 				IncreasePC();
 				return;
         }
+		case SC_Seek:
+		{
+			// Input: Vi tri(int), id cua file(OpenFileID)
+			// Output: -1: Loi, Vi tri thuc su: Thanh cong
+			// Cong dung: Di chuyen con tro den vi tri thich hop trong file voi tham so la vi tri can chuyen va id cua file
+			int pos = machine->ReadRegister(4); // Lay vi tri can chuyen con tro den trong file
+			int id = machine->ReadRegister(5); // Lay id cua file
+			// Kiem tra id cua file truyen vao co nam ngoai bang mo ta file khong
+			if (id < 0 || id > 14)
+			{
+				printf("\nKhong the seek vi id nam ngoai bang mo ta file.");
+				machine->WriteRegister(2, -1);
+				IncreasePC();
+				return;
+			}
+			// Kiem tra file co ton tai khong
+			if (fileSystem->fileTable[id] == NULL)
+			{
+				printf("\nKhong the seek vi file nay khong ton tai.");
+				machine->WriteRegister(2, -1);
+				IncreasePC();
+				return;
+			}
+			// Kiem tra co goi Seek tren console khong
+			if (id == 0 || id == 1)
+			{
+				printf("\nKhong the seek tren file console.");
+				machine->WriteRegister(2, -1);
+				IncreasePC();
+				return;
+			}
+			// Neu pos = -1 thi gan pos = Length nguoc lai thi giu nguyen pos
+			pos = (pos == -1) ? fileSystem->fileTable[id]->Length() : pos;
+			if (pos > fileSystem->fileTable[id]->Length() || pos < 0) // Kiem tra lai vi tri pos co hop le khong
+			{
+				printf("\nKhong the seek file den vi tri nay.");
+				machine->WriteRegister(2, -1);
+			}
+			else
+			{
+				// Neu hop le thi tra ve vi tri di chuyen thuc su trong file
+				fileSystem->fileTable[id]->Seek(pos);
+				machine->WriteRegister(2, pos);
+			}
+			IncreasePC();
+			return;
+		}
 		case SC_CreateSemaphore:
 		{
 			int virtAddr = machine->ReadRegister(4);
@@ -461,9 +508,9 @@ void ExceptionHandler(ExceptionType which)
 					IncreasePC();
 					return;
 				}
-				
+				printf("Ten file %s", filename);
 				int NullPos = fileSystem->findNullPos();
-
+				printf("\nVi tri trong: %d",NullPos);
 				if (NullPos != -1)	// Neu con vi tri trong
 				{
 					// Console input
@@ -742,73 +789,78 @@ void ExceptionHandler(ExceptionType which)
 			{
 				//get process id
 				int pid = machine->ReadRegister(4);
-				printf("1");
+
 				//JoinUpdate return exit code, if there is no error, exit code = 0;
 				int exitCode = gPTable->JoinUpdate(pid);
-				printf("2");
+
 				//return exit code
 				machine->WriteRegister(2, exitCode);
-				printf("3");
 				//increase program counter
 				IncreasePC();
 
 				return;
 			}
       
-      case SC_Wait:
-      {
-        int virtAddr = machine->ReadRegister(4);
-        
-        char* name = User2System(virtAddr, MaxFileLength + 1);
-        if (name == NULL) {
-          printf("\nSystem khong du bo nho");
-          machine->WriteRegister(2, -1); // failed
-          delete[] name;
-          return;
-        }
+		  case SC_Down:
+		  {
+		    int virtAddr = machine->ReadRegister(4);
+		    
+		    char* name = User2System(virtAddr, MaxFileLength + 1);
+		    if (name == NULL) {
+		      printf("\nSystem khong du bo nho");
+		      machine->WriteRegister(2, -1); // failed
+		      delete[] name;
+  		      IncreasePC();
+		      return;
+		    }
 
-        int result = stab->Wait(name);
+		    int result = stab->Wait(name);
 
-        if (result == -1)
-        {
-          printf("\nKhong ton tai semaphore '%s'", name);
-          machine->WriteRegister(2, -1); // failed
-          delete[] name;
-          return;
-        }
-        
-        delete[] name;
-        machine->WriteRegister(2, result); // success
-        return;
-      }
+		    if (result == -1)
+		    {
+		      printf("\nKhong ton tai semaphore '%s'", name);
+		      machine->WriteRegister(2, -1); // failed
+		      delete[] name;
+			  IncreasePC();
+		      return;
+		    }
+		    
+		    delete[] name;
+		    machine->WriteRegister(2, result); // success
+			IncreasePC();
+		    return;
+		  }
 
-      case SC_Signal: 
-      {
-        int virtAddr = machine->ReadRegister(4);
-        
-        char* name = User2System(virtAddr, MaxFileLength + 1);
+		  case SC_Up: 
+		  {
+		    int virtAddr = machine->ReadRegister(4);
+		    
+		    char* name = User2System(virtAddr, MaxFileLength + 1);
 
-        if (name == NULL) {
-          printf("\nSystem khong du bo nho");
-          machine->WriteRegister(2, -1); // failed
-          delete[] name;
-          return;
-        }
+		    if (name == NULL) {
+		      printf("\nSystem khong du bo nho");
+		      machine->WriteRegister(2, -1); // failed
+		      delete[] name;
+			  IncreasePC();
+		      return;
+		    }
 
-        int result = stab->Signal(name);
+		    int result = stab->Signal(name);
 
-        if (result == -1)
-        {
-          printf("\nKhong ton tai semaphore '%s'", name);
-          machine->WriteRegister(2, -1); // failed
-          delete[] name;
-          return;
-        }
+		    if (result == -1)
+		    {
+		      printf("\nKhong ton tai semaphore '%s'", name);
+		      machine->WriteRegister(2, -1); // failed
+		      delete[] name;
+			  IncreasePC();
+		      return;
+		    }
 
-        machine->WriteRegister(2, result); // success
-        delete[] name;
-        return;
-      }
+		    delete[] name;
+		    machine->WriteRegister(2, result); // success
+			IncreasePC();
+		    return;
+		  }
 
 			case SC_Exit:
 			{
